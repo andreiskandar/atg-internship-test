@@ -6,3 +6,14 @@ type Talk @model {
   speakerName: String!
   speakerBio: String!
 }
+
+type Coin {
+  id: String!
+  name: String!
+  symbol: String!
+  price_usd: String!
+}
+
+type Query {
+  getCoins(limit: Int, start: Int): [Coin] @function(name: "atgtestfunction-${env}")
+}

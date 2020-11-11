@@ -2,13 +2,12 @@ import React, { useEffect, useReducer } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { listTalks as ListTalks } from './graphql/queries';
+import { listTalks as ListTalks, getCoins as listCoins } from './graphql/queries';
 import { createTalk as CreateTalk } from './graphql/mutations';
 
 import { API, graphqlOperation } from 'aws-amplify';
 
 const CLIENT_ID = uuidv4();
-console.log('CLIENT_ID:', CLIENT_ID);
 
 const initialState = {
   name: '',
@@ -16,10 +15,13 @@ const initialState = {
   speakerName: '',
   speakerBio: '',
   talks: [],
+  coins: [],
 };
 
 function reducer(state, action) {
   switch (action.type) {
+    case 'SET_COINS':
+      return { ...state, coins: action.coins };
     case 'SET_TALKS':
       return { ...state, talks: action.talks };
     case 'SET_INPUT':
@@ -35,6 +37,16 @@ function App() {
   useEffect(() => {
     getData();
   }, []);
+
+  const getCoins = async () => {
+    try {
+      const coinsData = await API.graphql(graphqlOperation(listCoins));
+      console.log('coinsData:', coinsData);
+      dispatch({ type: 'SET_COINS', coins: coinsData });
+    } catch (err) {
+      console.log('error fetching coins...', err);
+    }
+  };
 
   async function getData() {
     try {
