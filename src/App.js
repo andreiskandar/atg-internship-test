@@ -135,6 +135,16 @@ function App() {
         value={state.augerLength}
         placeholder='auger length (ft) max: 25.7ft'
       />
+      <label>
+        Diesel
+        <input type='radio' checked='checked'></input>
+        <span class='checkmark'></span>
+      </label>
+      <label>
+        Electrical
+        <span class='checkmark'></span>
+        <input type='radio'></input>
+      </label>
       <button onClick={createTalk}>Create Report </button>
       {renderTalks}
       {renderCoins}

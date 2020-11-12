@@ -12,8 +12,18 @@ export const getCoins = /* GraphQL */ `
   }
 `;
 export const syncTalks = /* GraphQL */ `
-  query SyncTalks($filter: ModelTalkFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {
-    syncTalks(filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync) {
+  query SyncTalks(
+    $filter: ModelTalkFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncTalks(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
       items {
         id
         clientId
@@ -50,7 +60,11 @@ export const getTalk = /* GraphQL */ `
   }
 `;
 export const listTalks = /* GraphQL */ `
-  query ListTalks($filter: ModelTalkFilterInput, $limit: Int, $nextToken: String) {
+  query ListTalks(
+    $filter: ModelTalkFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
     listTalks(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -59,6 +73,98 @@ export const listTalks = /* GraphQL */ `
         description
         speakerName
         speakerBio
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncSimulationReports = /* GraphQL */ `
+  query SyncSimulationReports(
+    $filter: ModelsimulationReportFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncSimulationReports(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        combine_weight
+        wheel_diameter
+        fuel_type
+        auger_length
+        time_per_pass
+        time_taken_to_plane_the_field
+        percentage_of_field_chosen_to_cover
+        cost_per_run
+        total_efficiency
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getSimulationReport = /* GraphQL */ `
+  query GetSimulationReport($id: ID!) {
+    getSimulationReport(id: $id) {
+      id
+      combine_weight
+      wheel_diameter
+      fuel_type
+      auger_length
+      time_per_pass
+      time_taken_to_plane_the_field
+      percentage_of_field_chosen_to_cover
+      cost_per_run
+      total_efficiency
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listSimulationReports = /* GraphQL */ `
+  query ListSimulationReports(
+    $filter: ModelsimulationReportFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSimulationReports(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        combine_weight
+        wheel_diameter
+        fuel_type
+        auger_length
+        time_per_pass
+        time_taken_to_plane_the_field
+        percentage_of_field_chosen_to_cover
+        cost_per_run
+        total_efficiency
+        _version
+        _deleted
+        _lastChangedAt
         createdAt
         updatedAt
       }

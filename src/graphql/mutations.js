@@ -61,3 +61,75 @@ export const deleteTalk = /* GraphQL */ `
     }
   }
 `;
+export const createSimulationReport = /* GraphQL */ `
+  mutation CreateSimulationReport(
+    $input: CreateSimulationReportInput!
+    $condition: ModelsimulationReportConditionInput
+  ) {
+    createSimulationReport(input: $input, condition: $condition) {
+      id
+      combine_weight
+      wheel_diameter
+      fuel_type
+      auger_length
+      time_per_pass
+      time_taken_to_plane_the_field
+      percentage_of_field_chosen_to_cover
+      cost_per_run
+      total_efficiency
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateSimulationReport = /* GraphQL */ `
+  mutation UpdateSimulationReport(
+    $input: UpdateSimulationReportInput!
+    $condition: ModelsimulationReportConditionInput
+  ) {
+    updateSimulationReport(input: $input, condition: $condition) {
+      id
+      combine_weight
+      wheel_diameter
+      fuel_type
+      auger_length
+      time_per_pass
+      time_taken_to_plane_the_field
+      percentage_of_field_chosen_to_cover
+      cost_per_run
+      total_efficiency
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteSimulationReport = /* GraphQL */ `
+  mutation DeleteSimulationReport(
+    $input: DeleteSimulationReportInput!
+    $condition: ModelsimulationReportConditionInput
+  ) {
+    deleteSimulationReport(input: $input, condition: $condition) {
+      id
+      combine_weight
+      wheel_diameter
+      fuel_type
+      auger_length
+      time_per_pass
+      time_taken_to_plane_the_field
+      percentage_of_field_chosen_to_cover
+      cost_per_run
+      total_efficiency
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
