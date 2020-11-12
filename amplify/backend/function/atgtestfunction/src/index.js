@@ -1,4 +1,3 @@
-// amplify/backend/function/currencyfunction/src/index.js
 const axios = require('axios');
 
 exports.handler = function (event, _, callback) {

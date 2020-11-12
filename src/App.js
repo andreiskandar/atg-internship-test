@@ -36,13 +36,14 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
     getData();
+    getCoins();
   }, []);
 
   const getCoins = async () => {
     try {
       const coinsData = await API.graphql(graphqlOperation(listCoins));
       console.log('coinsData:', coinsData);
-      dispatch({ type: 'SET_COINS', coins: coinsData });
+      dispatch({ type: 'SET_COINS', coins: coinsData.data.getCoins });
     } catch (err) {
       console.log('error fetching coins...', err);
     }
@@ -78,6 +79,14 @@ function App() {
     dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
   }
 
+  const renderCoins = state.coins.map((coin) => (
+    <div key={coin.id}>
+      <p>
+        {coin.name}({coin.symbol}) = ${coin.price_usd}{' '}
+      </p>
+    </div>
+  ));
+
   const renderTalks = state.talks.map((talk, index) => (
     <div key={index}>
       <h3>
@@ -96,6 +105,7 @@ function App() {
       <input name='speakerBio' onChange={onChange} value={state.speakerBio} placeholder='speakerBio' />
       <button onClick={createTalk}>Create Talk</button>
       {renderTalks}
+      {renderCoins}
     </div>
   );
 }

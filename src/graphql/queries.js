@@ -12,18 +12,8 @@ export const getCoins = /* GraphQL */ `
   }
 `;
 export const syncTalks = /* GraphQL */ `
-  query SyncTalks(
-    $filter: ModelTalkFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncTalks(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
+  query SyncTalks($filter: ModelTalkFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {
+    syncTalks(filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync) {
       items {
         id
         clientId
@@ -60,11 +50,7 @@ export const getTalk = /* GraphQL */ `
   }
 `;
 export const listTalks = /* GraphQL */ `
-  query ListTalks(
-    $filter: ModelTalkFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListTalks($filter: ModelTalkFilterInput, $limit: Int, $nextToken: String) {
     listTalks(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -73,9 +59,6 @@ export const listTalks = /* GraphQL */ `
         description
         speakerName
         speakerBio
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
