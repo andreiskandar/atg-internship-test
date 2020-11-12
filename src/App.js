@@ -4,6 +4,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { listTalks as ListTalks, getCoins as listCoins } from './graphql/queries';
 import { createTalk as CreateTalk } from './graphql/mutations';
+import {
+  WHEEL_DIAMETER_in,
+  BASE_COMBINE_WEIGHT_lbs,
+  AUGER_LENGTH_ft,
+  TIME_PER_PASS_min,
+  TOTAL_COST_PER_ACRE_dollar,
+  TOTAL_PASS_TO_PLANE_PER_ACRE,
+  FUEL_CONSUMPTION_PER_ACRE,
+} from './helpers/constants';
 
 import { API, graphqlOperation } from 'aws-amplify';
 
@@ -14,9 +23,25 @@ const initialState = {
   description: '',
   speakerName: '',
   speakerBio: '',
+  wheelDiameter: 0,
+  augerLength: 0,
+  combineWeight: 53000,
+  timeTakenToPlaneTheField: 0,
+  percentageOfFieldChosenToCover: 0,
+  costPerRun: 0,
+  totalEffieciency: 0,
   talks: [],
   coins: [],
 };
+
+// CONSTANTS
+// const WHEEL_DIAMETER_in = 60;
+// const BASE_COMBINE_WEIGHT_lbs = 53000;
+// const AUGER_LENGTH_ft = 8.7;
+// const TIME_PER_PASS_min = 5;
+// const TOTAL_PASS_TO_PLANE_PER_ACRE = 24; // = 240passes / 10acres
+// const FUEL_CONSUMPTION_PER_ACRE = 2; // = 20gallons / 10acres
+// const TOTAL_COST_PER_ACRE_dollar = 35; // = $350 / 10acres
 
 function reducer(state, action) {
   switch (action.type) {
@@ -98,12 +123,19 @@ function App() {
   ));
 
   return (
-    <div>
+    <div className='App'>
       <input name='name' onChange={onChange} value={state.name} placeholder='name' />
       <input name='description' onChange={onChange} value={state.description} placeholder='description' />
       <input name='speakerName' onChange={onChange} value={state.speakerName} placeholder='speakerName' />
       <input name='speakerBio' onChange={onChange} value={state.speakerBio} placeholder='speakerBio' />
-      <button onClick={createTalk}>Create Talk</button>
+      <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter (in)' />
+      <input
+        name='augerLength'
+        onChange={onChange}
+        value={state.augerLength}
+        placeholder='auger length (ft) max: 25.7ft'
+      />
+      <button onClick={createTalk}>Create Report </button>
       {renderTalks}
       {renderCoins}
     </div>
