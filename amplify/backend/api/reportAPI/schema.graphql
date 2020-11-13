@@ -1,33 +1,7 @@
-type Talk @model {
-  id: ID!
-  clientId: ID
-  name: String!
-  description: String!
-  speakerName: String!
-  speakerBio: String!
-
-}
-
 type simulationReport @model {
   id: ID!
-  combine_weight: Float!
-  wheel_diameter: Int!
-  fuel_type: String!
-  auger_length: Float!
-  time_per_pass: Float!
-  time_taken_to_plane_the_field: Float!
-  percentage_of_field_chosen_to_cover: Float!
-  cost_per_run: Float!
-  total_efficiency: Float!
-}
-
-type Coin {
-  id: String!
-  name: String!
-  symbol: String!
-  price_usd: String!
-}
-
-type Query {
-  getCoins(limit: Int, start: Int): [Coin] @function(name: "atgtestfunction-${env}")
+  combineWeight: Float!
+  wheelDiameter: Int!
+  fuelType: String!
+  augerLength: Float!
 }

@@ -22,7 +22,7 @@ const getTotalTimeToPlaneField = (wheelDiameterFromUserInput) => {
     wheelDiaDiff;
   return totalTimeToPlaneField;
 };
-const getTotalCostPerRun = (wheelDiameterFromUserInput, electric = false) => {
+const getTotalCostPerRun = (wheelDiameterFromUserInput, fuelType) => {
   // Increase in Wheel Size by 1-inch results in weight increase by 5%
   // assumption: weight and fuel are linear relationship. Thus increase in weight will increase in fuel consumption
   const wheelDiaDiff = wheelDiameterFromUserInput - WHEEL_DIAMETER_in;

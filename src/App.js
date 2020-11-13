@@ -2,9 +2,8 @@ import React, { useEffect, useReducer } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { listTalks as ListTalks, getCoins as listCoins } from './graphql/queries';
 import { listSimulationReports } from './graphql/queries';
-import { createTalk as CreateTalk } from './graphql/mutations';
+import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
 import {
   WHEEL_DIAMETER_in,
   BASE_COMBINE_WEIGHT_lbs,
@@ -15,24 +14,21 @@ import {
   FUEL_CONSUMPTION_PER_ACRE,
 } from './helpers/constants';
 
+import { getTotalTimeToPlaneField, getTotalCostPerRun } from './helpers/calculation';
+
 import { API, graphqlOperation } from 'aws-amplify';
 
-const CLIENT_ID = uuidv4();
+const REPORT_ID = uuidv4();
 
 const initialState = {
-  name: '',
-  description: '',
-  speakerName: '',
-  speakerBio: '',
   wheelDiameter: '',
   augerLength: '',
+  fuelType: 'Diesel',
   combineWeight: 53000,
   timeTakenToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
   costPerRun: 0,
   totalEffieciency: 0,
-  talks: [],
-  coins: [],
   report: [],
 };
 
@@ -47,16 +43,12 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'SET_COINS':
-      return { ...state, coins: action.coins };
-    case 'SET_TALKS':
-      return { ...state, talks: action.talks };
     case 'SET_REPORT':
       return { ...state, report: action.report };
     case 'SET_INPUT':
       return { ...state, [action.key]: action.value };
     case 'CLEAR_INPUT':
-      return { ...initialState, talks: state.talks };
+      return { ...initialState, report: state.report };
 
     default:
       return state;
@@ -65,9 +57,7 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    // getData();
     getSimulationReport();
-    getCoins();
   }, []);
 
   const getSimulationReport = async () => {
@@ -79,66 +69,41 @@ function App() {
     }
   };
 
-  const createReport = async () => {};
+  const renderReport = state.report.map((item, index) => (
+    <div key={index}>
+      <h2>report {index + 1}</h2>
+      <p>wheel size : {item.wheelDiameter} in</p>
+      <p>combine weight : {item.combineWeight} lbs</p>
+      <p>auger length : {item.augerLength} ft </p>
+      <p>fuel type : {item.fuelType} </p>
+    </div>
+  ));
 
-  const getCoins = async () => {
-    try {
-      const coinsData = await API.graphql(graphqlOperation(listCoins));
-      console.log('coinsData:', coinsData);
-      dispatch({ type: 'SET_COINS', coins: coinsData.data.getCoins });
-    } catch (err) {
-      console.log('error fetching coins...', err);
-    }
-  };
+  const createSimulationReport = async () => {
+    const { wheelDiameter, augerLength, fuelType, combineWeight } = state;
 
-  async function getData() {
-    try {
-      const talkData = await API.graphql(graphqlOperation(ListTalks));
-      console.log('data from API', talkData);
-      dispatch({ type: 'SET_TALKS', talks: talkData.data.listTalks.items });
-    } catch (err) {
-      console.log('error fetching talks...', err);
-    }
-  }
-
-  async function createTalk() {
-    const { name, description, speakerName, speakerBio } = state;
-    if (name === '' || description === '' || speakerBio === '' || speakerName === '') return;
-
-    const talk = { name, description, speakerBio, speakerName, clientId: CLIENT_ID };
-    const talks = [...state.talks, talk];
-
-    dispatch({ type: 'SET_TALKS', talks });
+    const newReport = { wheelDiameter, augerLength, fuelType, combineWeight, reportId: REPORT_ID };
+    const report = [...state.report, newReport];
+    dispatch({ type: 'SET_REPORT', report });
     dispatch({ type: 'CLEAR_INPUT' });
+    console.log('state.report:', state.report);
 
     try {
-      await API.graphql(graphqlOperation(CreateTalk, { input: talk }));
+      await API.graphql(graphqlOperation(CreateSimulationReport, { input: newReport }));
     } catch (err) {
-      console.log('error creating talk', err);
+      console.log('error creating simulation report', err);
     }
-  }
+    const totalTimeToPlaneField = getTotalTimeToPlaneField();
+  };
 
   function onChange(e) {
     dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
   }
 
-  const renderCoins = state.coins.map((coin) => (
-    <div key={coin.id}>
-      <p>
-        {coin.name}({coin.symbol}) = ${coin.price_usd}{' '}
-      </p>
-    </div>
-  ));
-
-  const renderTalks = state.talks.map((talk, index) => (
-    <div key={index}>
-      <h3>
-        {talk.speakerName} will talk about {talk.name}
-      </h3>
-      <h5>{talk.description}</h5>
-      <p>{talk.speakerBio}</p>
-    </div>
-  ));
+  const fuelTypeSelected = (e) => {
+    e.preventDefault();
+    dispatch({ type: 'SET_FUEL_TYPE', fuel_type: e.target.value });
+  };
 
   return (
     <div className='App'>
@@ -151,18 +116,24 @@ function App() {
       />
       <label>
         Diesel
-        <input type='radio' checked='checked'></input>
-        <span class='checkmark'></span>
+        <input type='radio' checked='checked' name='fuelType' value='Diesel' onChange={onChange}></input>
+        <span className='checkmark'></span>
       </label>
       <label>
         Electrical
-        <span class='checkmark'></span>
-        <input type='radio'></input>
+        <span className='checkmark'></span>
+        <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
       </label>
-      <button onClick={createTalk}>Create Report</button>
-      {renderCoins}
+      <button onClick={createSimulationReport}>Create Report</button>
+      {renderReport}
     </div>
   );
 }
 
 export default App;
+
+// time_per_pass: Float!
+//   time_taken_to_plane_the_field: Float!
+//   percentage_of_field_chosen_to_cover: Float!
+//   cost_per_run: Float!
+//   total_efficiency: Float!
