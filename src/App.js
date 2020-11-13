@@ -1,20 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
-
+import roundTo from 'round-to';
 import { listSimulationReports } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
-import {
-  WHEEL_DIAMETER_in,
-  BASE_COMBINE_WEIGHT_lbs,
-  AUGER_LENGTH_ft,
-  TIME_PER_PASS_min,
-  TOTAL_COST_PER_ACRE_dollar,
-  NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE,
-  FUEL_CONSUMPTION_PER_ACRE,
-} from './helpers/constants';
+import { WHEEL_DIAMETER_in, AUGER_LENGTH_ft } from './helpers/constants';
 
-import { getTotalTimeToPlaneField, getTotalCostPerRun } from './helpers/calculation';
+import { getResult } from './helpers/calculation';
 
 import { API, graphqlOperation } from 'aws-amplify';
 
@@ -32,15 +24,6 @@ const initialState = {
   report: [],
 };
 
-// CONSTANTS
-// const WHEEL_DIAMETER_in = 60;
-// const BASE_COMBINE_WEIGHT_lbs = 53000;
-// const AUGER_LENGTH_ft = 8.7;
-// const TIME_PER_PASS_min = 5;
-// const NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE = 24; // = 240passes / 10acres
-// const FUEL_CONSUMPTION_PER_ACRE = 2; // = 20gallons / 10acres
-// const TOTAL_COST_PER_ACRE_dollar = 35; // = $350 / 10acres
-
 function reducer(state, action) {
   switch (action.type) {
     case 'SET_REPORT':
@@ -49,7 +32,6 @@ function reducer(state, action) {
       return { ...state, [action.key]: action.value };
     case 'CLEAR_INPUT':
       return { ...initialState, report: state.report };
-
     default:
       return state;
   }
@@ -73,25 +55,25 @@ function App() {
     <div key={index}>
       <h2>report {index + 1}</h2>
       <p>wheel size : {item.wheelDiameter || WHEEL_DIAMETER_in} in</p>
-      <p>combine weight : {item.combineWeight} lbs</p>
+      <p>combine weight : {roundTo(item.combineWeight, 0)} lbs</p>
       <p>auger length : {item.augerLength || AUGER_LENGTH_ft} ft </p>
       <p>fuel type : {item.fuelType} </p>
-      <p>total time to plane the field: {item.timeSpentToPlaneTheField} min</p>
-      <p>cost per run: ${item.costPerRun}</p>
+      <p>total time to plane the field: {roundTo(item.timeSpentToPlaneTheField, 0)} min</p>
+      <p>cost per run: ${roundTo(item.costPerRun, 2)}</p>
     </div>
   ));
 
   const createSimulationReport = async () => {
-    const { wheelDiameter, augerLength, fuelType, combineWeight } = state;
+    const { wheelDiameter, augerLength, fuelType } = state;
     // think about edge case when user only changes one of the parameters
-    const totalTimeToPlaneField = getTotalTimeToPlaneField(wheelDiameter, augerLength);
-    const totalCostPerRun = getTotalCostPerRun(wheelDiameter, fuelType, augerLength);
+
+    const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(wheelDiameter, fuelType, augerLength);
 
     const newReport = {
       wheelDiameter,
       augerLength,
       fuelType,
-      combineWeight,
+      combineWeight: totalWeight,
       reportId: REPORT_ID,
       timeSpentToPlaneTheField: totalTimeToPlaneField,
       costPerRun: totalCostPerRun,
@@ -100,8 +82,6 @@ function App() {
     const report = [...state.report, newReport];
     dispatch({ type: 'SET_REPORT', report });
     dispatch({ type: 'CLEAR_INPUT' });
-
-    console.log('state.report:', state.report);
 
     try {
       await API.graphql(graphqlOperation(CreateSimulationReport, { input: newReport }));
@@ -113,11 +93,6 @@ function App() {
   function onChange(e) {
     dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
   }
-
-  const fuelTypeSelected = (e) => {
-    e.preventDefault();
-    dispatch({ type: 'SET_FUEL_TYPE', fuel_type: e.target.value });
-  };
 
   return (
     <div className='App'>
@@ -134,7 +109,7 @@ function App() {
         <span className='checkmark'></span>
       </label>
       <label>
-        Electrical
+        Electric
         <span className='checkmark'></span>
         <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
       </label>
