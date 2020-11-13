@@ -1,11 +1,11 @@
 import React, { useEffect, useReducer } from 'react';
 
 import Header from './components/Header';
+// import Input from './components/Input';
+import Report from './components/Report';
 
-import roundTo from 'round-to';
 import { listSimulationReports } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
-import { WHEEL_DIAMETER_in, AUGER_LENGTH_ft } from './helpers/constants';
 
 import { getResult } from './helpers/calculation';
 
@@ -50,17 +50,7 @@ function App() {
     }
   };
 
-  const renderReport = state.report.map((item, index) => (
-    <div key={index}>
-      <h2>report {index + 1}</h2>
-      <p>wheel size : {item.wheelDiameter || WHEEL_DIAMETER_in} in</p>
-      <p>combine weight : {roundTo(item.combineWeight, 0)} lbs</p>
-      <p>auger length : {item.augerLength || AUGER_LENGTH_ft} ft </p>
-      <p>fuel type : {item.fuelType} </p>
-      <p>total time to plane the field: {roundTo(item.timeSpentToPlaneTheField, 0)} min</p>
-      <p>cost per run: ${roundTo(item.costPerRun, 2)}</p>
-    </div>
-  ));
+  const renderReport = state.report.map((item, index) => <Report item={item} index={index} />);
 
   const createSimulationReport = async () => {
     const { wheelDiameter, augerLength, fuelType } = state;
@@ -94,7 +84,6 @@ function App() {
 
   return (
     <div className='App'>
-      <Header />
       <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input
         name='augerLength'
@@ -113,6 +102,7 @@ function App() {
         <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
       </label>
       <button onClick={createSimulationReport}>Create Report</button>
+      <Header />
       {renderReport}
     </div>
   );

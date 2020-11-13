@@ -1,12 +1,15 @@
 import React from 'react';
-import './header.scss';
+import './styles.scss';
+
 const Header = () => {
   return (
     <div className='header'>
-      <div>#</div>
-      <div>Wheel Diameter (in)</div>
-      <div>Total Combine Weight (lbs)</div>
-      <div>Auger Length (ft)</div>
+      <div className='title__header'>#</div>
+      <div className='title__header'>Wheel Diameter (in)</div>
+      <div className='title__header'>Total Combine Weight (lbs)</div>
+      <div className='title__header'>Auger Length (ft)</div>
+      <div className='title__header'>Fuel Type</div>
+      <div className='title__header'>Num Of Passes To Plane The Field</div>
     </div>
   );
 };

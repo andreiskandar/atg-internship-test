@@ -1,0 +1,20 @@
+.header{
+  display: flex;
+  .title__header{
+    font-size: smaller;
+    border: solid thin black;
+    padding: 3px;
+  }
+}
+
+.report_body{
+  display: flex;
+  .content__report_body{
+    font-size: smaller;
+    border: solid thin black;
+  }
+
+  .num{
+    width: 10px;
+  }
+}
