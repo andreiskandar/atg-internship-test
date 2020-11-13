@@ -12,6 +12,8 @@ export const createSimulationReport = /* GraphQL */ `
       wheelDiameter
       fuelType
       augerLength
+      timeSpentToPlaneTheField
+      costPerRun
       _version
       _deleted
       _lastChangedAt
@@ -31,6 +33,8 @@ export const updateSimulationReport = /* GraphQL */ `
       wheelDiameter
       fuelType
       augerLength
+      timeSpentToPlaneTheField
+      costPerRun
       _version
       _deleted
       _lastChangedAt
@@ -50,6 +54,8 @@ export const deleteSimulationReport = /* GraphQL */ `
       wheelDiameter
       fuelType
       augerLength
+      timeSpentToPlaneTheField
+      costPerRun
       _version
       _deleted
       _lastChangedAt

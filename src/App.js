@@ -25,7 +25,7 @@ const initialState = {
   augerLength: '',
   fuelType: 'Diesel',
   combineWeight: 53000,
-  timeTakenToPlaneTheField: 0,
+  timeSpentToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
   costPerRun: 0,
   totalEffieciency: 0,
@@ -72,20 +72,35 @@ function App() {
   const renderReport = state.report.map((item, index) => (
     <div key={index}>
       <h2>report {index + 1}</h2>
-      <p>wheel size : {item.wheelDiameter} in</p>
+      <p>wheel size : {item.wheelDiameter || WHEEL_DIAMETER_in} in</p>
       <p>combine weight : {item.combineWeight} lbs</p>
-      <p>auger length : {item.augerLength} ft </p>
+      <p>auger length : {item.augerLength || AUGER_LENGTH_ft} ft </p>
       <p>fuel type : {item.fuelType} </p>
+      <p>total time to plane the field: {item.timeSpentToPlaneTheField} min</p>
+      <p>cost per run: ${item.costPerRun}</p>
     </div>
   ));
 
   const createSimulationReport = async () => {
     const { wheelDiameter, augerLength, fuelType, combineWeight } = state;
+    // think about edge case when user only changes one of the parameters
+    const totalTimeToPlaneField = getTotalTimeToPlaneField(wheelDiameter, augerLength);
+    const totalCostPerRun = getTotalCostPerRun(wheelDiameter, fuelType, augerLength);
 
-    const newReport = { wheelDiameter, augerLength, fuelType, combineWeight, reportId: REPORT_ID };
+    const newReport = {
+      wheelDiameter,
+      augerLength,
+      fuelType,
+      combineWeight,
+      reportId: REPORT_ID,
+      timeSpentToPlaneTheField: totalTimeToPlaneField,
+      costPerRun: totalCostPerRun,
+    };
+
     const report = [...state.report, newReport];
     dispatch({ type: 'SET_REPORT', report });
     dispatch({ type: 'CLEAR_INPUT' });
+
     console.log('state.report:', state.report);
 
     try {
@@ -93,7 +108,6 @@ function App() {
     } catch (err) {
       console.log('error creating simulation report', err);
     }
-    const totalTimeToPlaneField = getTotalTimeToPlaneField();
   };
 
   function onChange(e) {

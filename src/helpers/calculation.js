@@ -11,32 +11,47 @@ const {
   TIME_PER_PASS_min,
   NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE,
   TOTAL_FIELD_AREA_acre,
+  TOTAL_COST_PER_ACRE_dollar,
+  AUGER_LENGTH_ft,
 } = require('./constants');
 
-const getTotalTimeToPlaneField = (wheelDiameterFromUserInput) => {
-  //  Increase in Wheel Size by 1-inch results in weight increase by 5% but a time reduction of 3%
+const getTotalTimeToPlaneField = (wheelDiameterFromUserInput, augerLengthFromUserInput) => {
   const wheelDiaDiff = wheelDiameterFromUserInput - WHEEL_DIAMETER_in;
-  const TIME_REDUCTION_FACTOR = 0.97;
+  const totalNumberOfPassesRequiredToPlane =
+    (NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE * TOTAL_FIELD_AREA_acre * AUGER_LENGTH_ft) / augerLengthFromUserInput;
+
+  const TIME_REDUCTION_FACTOR = !wheelDiaDiff ? 1 : 0.97;
+
   const totalTimeToPlaneField =
-    (NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE * TOTAL_FIELD_AREA_acre * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR) ^
-    wheelDiaDiff;
+    (totalNumberOfPassesRequiredToPlane * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR) ^ wheelDiaDiff;
+
   return totalTimeToPlaneField;
 };
-const getTotalCostPerRun = (wheelDiameterFromUserInput, fuelType) => {
+const getTotalCostPerRun = (wheelDiameterFromUserInput, fuelType, augerLengthFromUserInput) => {
   // Increase in Wheel Size by 1-inch results in weight increase by 5%
   // assumption: weight and fuel are linear relationship. Thus increase in weight will increase in fuel consumption
   const wheelDiaDiff = wheelDiameterFromUserInput - WHEEL_DIAMETER_in;
-  const FUEL_INC_DUE_TO_WEIGHT_FACTOR = 1.05;
+  const augerLenDiff = augerLengthFromUserInput - AUGER_LENGTH_ft;
+  const COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR = 1.08;
+  const COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR = 1.05;
   const COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR = 0.995;
 
   //find out number of run using electric?
   let totalCostPerRun;
-  totalCostPerRun = (TOTAL_COST_PER_ACRE_dollar * TOTAL_FIELD_AREA_acre * FUEL_INC_DUE_TO_WEIGHT_FACTOR) ^ wheelDiaDiff;
-  if (electric) {
-  }
+  totalCostPerRun =
+    TOTAL_COST_PER_ACRE_dollar *
+    TOTAL_FIELD_AREA_acre *
+    (COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR ^ wheelDiaDiff) *
+    (COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR ^ augerLenDiff);
+  // if ('Electrical') {
+  // }
+
+  //  Auger length can be altered from the base unit by 1 foot increments up to a maximum
+  // auger length of 25.7 feet. 1 increment increase results in weight increase by 8%.
 
   return totalCostPerRun;
 };
+
 module.exports = { getTotalTimeToPlaneField, getTotalCostPerRun };
 
 // A Base Combine weighs 53,000 pounds, with 60-inch wheels, and 8.7 feet wide auger,

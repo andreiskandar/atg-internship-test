@@ -4,4 +4,7 @@ type simulationReport @model {
   wheelDiameter: Int!
   fuelType: String!
   augerLength: Float!
+  timeSpentToPlaneTheField: Float
+  costPerRun: Float
+
 }

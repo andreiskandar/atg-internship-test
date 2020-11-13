@@ -15,6 +15,8 @@ export const syncSimulationReports = /* GraphQL */ `
         wheelDiameter
         fuelType
         augerLength
+        timeSpentToPlaneTheField
+        costPerRun
         _version
         _deleted
         _lastChangedAt
@@ -34,6 +36,8 @@ export const getSimulationReport = /* GraphQL */ `
       wheelDiameter
       fuelType
       augerLength
+      timeSpentToPlaneTheField
+      costPerRun
       _version
       _deleted
       _lastChangedAt
@@ -51,6 +55,9 @@ export const listSimulationReports = /* GraphQL */ `
         wheelDiameter
         fuelType
         augerLength
+        timeSpentToPlaneTheField
+        costPerRun
+
         createdAt
         updatedAt
       }
