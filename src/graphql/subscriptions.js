@@ -11,6 +11,7 @@ export const onCreateSimulationReport = /* GraphQL */ `
       augerLength
       timeSpentToPlaneTheField
       costPerRun
+      percentageOfFieldChosenToCover
       _version
       _deleted
       _lastChangedAt
@@ -29,6 +30,7 @@ export const onUpdateSimulationReport = /* GraphQL */ `
       augerLength
       timeSpentToPlaneTheField
       costPerRun
+      percentageOfFieldChosenToCover
       _version
       _deleted
       _lastChangedAt
@@ -47,6 +49,7 @@ export const onDeleteSimulationReport = /* GraphQL */ `
       augerLength
       timeSpentToPlaneTheField
       costPerRun
+      percentageOfFieldChosenToCover
       _version
       _deleted
       _lastChangedAt

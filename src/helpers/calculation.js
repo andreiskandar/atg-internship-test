@@ -1,11 +1,3 @@
-// const WHEEL_DIAMETER_in = 60;
-// const BASE_COMBINE_WEIGHT_lbs = 53000;
-// const AUGER_LENGTH_ft = 8.7;
-// const TIME_PER_PASS_min = 5;
-// const NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE = 24; // = 240passes / 10acres
-// const FUEL_CONSUMPTION_PER_ACRE = 2; // = 20gallons / 10acres
-// const TOTAL_COST_PER_ACRE_dollar = 35; // = $350 / 10acres
-
 const {
   WHEEL_DIAMETER_in,
   TIME_PER_PASS_min,
@@ -17,7 +9,6 @@ const {
 } = require('./constants');
 
 const getResult = (wheelDiameterFromUserInput, fuelType, augerLengthFromUserInput) => {
-  console.log('fuelType:', fuelType);
   const COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR = 1.08;
   const COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR = 1.05;
   const COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR = 0.995;

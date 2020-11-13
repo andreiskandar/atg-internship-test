@@ -6,5 +6,5 @@ type simulationReport @model {
   augerLength: Float!
   timeSpentToPlaneTheField: Float
   costPerRun: Float
-
+  percentageOfFieldChosenToCover: Float
 }

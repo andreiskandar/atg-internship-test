@@ -17,6 +17,7 @@ export const syncSimulationReports = /* GraphQL */ `
         augerLength
         timeSpentToPlaneTheField
         costPerRun
+        percentageOfFieldChosenToCover
         _version
         _deleted
         _lastChangedAt
@@ -38,6 +39,7 @@ export const getSimulationReport = /* GraphQL */ `
       augerLength
       timeSpentToPlaneTheField
       costPerRun
+      percentageOfFieldChosenToCover
       _version
       _deleted
       _lastChangedAt
@@ -57,7 +59,7 @@ export const listSimulationReports = /* GraphQL */ `
         augerLength
         timeSpentToPlaneTheField
         costPerRun
-
+        percentageOfFieldChosenToCover
         createdAt
         updatedAt
       }

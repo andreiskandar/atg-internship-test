@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
+import Header from './components/Header';
+
 import roundTo from 'round-to';
 import { listSimulationReports } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
@@ -9,8 +10,6 @@ import { WHEEL_DIAMETER_in, AUGER_LENGTH_ft } from './helpers/constants';
 import { getResult } from './helpers/calculation';
 
 import { API, graphqlOperation } from 'aws-amplify';
-
-const REPORT_ID = uuidv4();
 
 const initialState = {
   wheelDiameter: '',
@@ -70,11 +69,10 @@ function App() {
     const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(wheelDiameter, fuelType, augerLength);
 
     const newReport = {
-      wheelDiameter,
-      augerLength,
+      wheelDiameter: parseInt(wheelDiameter),
+      augerLength: parseFloat(augerLength),
       fuelType,
       combineWeight: totalWeight,
-      reportId: REPORT_ID,
       timeSpentToPlaneTheField: totalTimeToPlaneField,
       costPerRun: totalCostPerRun,
     };
@@ -96,6 +94,7 @@ function App() {
 
   return (
     <div className='App'>
+      <Header />
       <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input
         name='augerLength'
@@ -123,6 +122,5 @@ export default App;
 
 // time_per_pass: Float!
 //   time_taken_to_plane_the_field: Float!
-//   percentage_of_field_chosen_to_cover: Float!
 //   cost_per_run: Float!
 //   total_efficiency: Float!
