@@ -3,6 +3,7 @@ import React, { useEffect, useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { listTalks as ListTalks, getCoins as listCoins } from './graphql/queries';
+import { listSimulationReports } from './graphql/queries';
 import { createTalk as CreateTalk } from './graphql/mutations';
 import {
   WHEEL_DIAMETER_in,
@@ -10,7 +11,7 @@ import {
   AUGER_LENGTH_ft,
   TIME_PER_PASS_min,
   TOTAL_COST_PER_ACRE_dollar,
-  TOTAL_PASS_TO_PLANE_PER_ACRE,
+  NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE,
   FUEL_CONSUMPTION_PER_ACRE,
 } from './helpers/constants';
 
@@ -23,8 +24,8 @@ const initialState = {
   description: '',
   speakerName: '',
   speakerBio: '',
-  wheelDiameter: 0,
-  augerLength: 0,
+  wheelDiameter: '',
+  augerLength: '',
   combineWeight: 53000,
   timeTakenToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
@@ -32,6 +33,7 @@ const initialState = {
   totalEffieciency: 0,
   talks: [],
   coins: [],
+  report: [],
 };
 
 // CONSTANTS
@@ -39,7 +41,7 @@ const initialState = {
 // const BASE_COMBINE_WEIGHT_lbs = 53000;
 // const AUGER_LENGTH_ft = 8.7;
 // const TIME_PER_PASS_min = 5;
-// const TOTAL_PASS_TO_PLANE_PER_ACRE = 24; // = 240passes / 10acres
+// const NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE = 24; // = 240passes / 10acres
 // const FUEL_CONSUMPTION_PER_ACRE = 2; // = 20gallons / 10acres
 // const TOTAL_COST_PER_ACRE_dollar = 35; // = $350 / 10acres
 
@@ -49,10 +51,13 @@ function reducer(state, action) {
       return { ...state, coins: action.coins };
     case 'SET_TALKS':
       return { ...state, talks: action.talks };
+    case 'SET_REPORT':
+      return { ...state, report: action.report };
     case 'SET_INPUT':
       return { ...state, [action.key]: action.value };
     case 'CLEAR_INPUT':
       return { ...initialState, talks: state.talks };
+
     default:
       return state;
   }
@@ -60,9 +65,21 @@ function reducer(state, action) {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    getData();
+    // getData();
+    getSimulationReport();
     getCoins();
   }, []);
+
+  const getSimulationReport = async () => {
+    try {
+      const reportData = await API.graphql(graphqlOperation(listSimulationReports));
+      dispatch({ type: 'SET_REPORT', report: reportData.data.listSimulationReports.items });
+    } catch (err) {
+      console.log('error fetching report...', err);
+    }
+  };
+
+  const createReport = async () => {};
 
   const getCoins = async () => {
     try {
@@ -100,6 +117,7 @@ function App() {
       console.log('error creating talk', err);
     }
   }
+
   function onChange(e) {
     dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
   }
@@ -124,16 +142,12 @@ function App() {
 
   return (
     <div className='App'>
-      <input name='name' onChange={onChange} value={state.name} placeholder='name' />
-      <input name='description' onChange={onChange} value={state.description} placeholder='description' />
-      <input name='speakerName' onChange={onChange} value={state.speakerName} placeholder='speakerName' />
-      <input name='speakerBio' onChange={onChange} value={state.speakerBio} placeholder='speakerBio' />
-      <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter (in)' />
+      <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input
         name='augerLength'
         onChange={onChange}
         value={state.augerLength}
-        placeholder='auger length (ft) max: 25.7ft'
+        placeholder='augerLength in ft max:25.7'
       />
       <label>
         Diesel
@@ -145,8 +159,7 @@ function App() {
         <span class='checkmark'></span>
         <input type='radio'></input>
       </label>
-      <button onClick={createTalk}>Create Report </button>
-      {renderTalks}
+      <button onClick={createTalk}>Create Report</button>
       {renderCoins}
     </div>
   );
