@@ -1,20 +1,72 @@
-.header{
+.header {
   display: flex;
-  .title__header{
+  .title__header {
     font-size: smaller;
     border: solid thin black;
     padding: 3px;
   }
 }
 
-.report_body{
+
+
+
+.report_body {
   display: flex;
-  .content__report_body{
+
+  .content__report_body {
     font-size: smaller;
     border: solid thin black;
+    padding: 3px;
   }
 
-  .num{
-    width: 10px;
-  }
+  
+}
+
+.num {
+  display: flex;
+  justify-content: center;
+  width: 14px;
+
+}
+
+.wheelDia {
+  display: flex;
+  justify-content: flex-end;
+  width: 125px;
+}
+
+.combineWgt {
+  display: flex;
+  justify-content: flex-end;
+  width: 168px;
+}
+
+.augerLen {
+  display: flex;
+  justify-content: flex-end;
+  width: 107px;
+}
+
+.fuelType {
+  display: flex;
+  justify-content: flex-end;
+  width: 60px;
+}
+
+.totalTime {
+  display: flex;
+  justify-content: flex-end;
+  width: 210px;
+}
+
+.totalCost {
+  display: flex;
+  justify-content: flex-end;
+  width: 70px;
+}
+
+.numPasses {
+  display: flex;
+  justify-content: flex-end;
+  width: 158px;
 }
