@@ -15,7 +15,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 const initialState = {
   wheelDiameter: '',
   augerLength: '',
-  fuelType: 'Diesel',
+  fuelType: '',
   combineWeight: 53000,
   timeSpentToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
@@ -46,7 +46,7 @@ function App() {
 
   useEffect(() => {
     getSimulationReport();
-  }, [state.numElectricRuns]);
+  }, []);
 
   const getSimulationReport = async () => {
     try {
@@ -55,6 +55,7 @@ function App() {
 
       const electricRuns = state.report.filter((run) => run.fuelType === 'Electric').length;
       dispatch({ type: 'SET_INPUT', key: 'numElectricRuns', value: electricRuns });
+      console.log('fuelType:', state.fuelType);
     } catch (err) {
       console.log('error fetching report...', err);
     }
@@ -68,11 +69,17 @@ function App() {
   ));
 
   const createSimulationReport = async () => {
-    const { wheelDiameter, augerLength, fuelType } = state;
+    const { wheelDiameter, augerLength, fuelType, numElectricRuns } = state;
     // think about edge case when user only changes one of the parameters
 
-    const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(wheelDiameter, fuelType, augerLength);
+    const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
+      wheelDiameter,
+      augerLength,
+      fuelType,
+      numElectricRuns
+    );
 
+    console.log('totalCostPerRun: inside app', totalCostPerRun);
     const newReport = {
       wheelDiameter: parseInt(wheelDiameter),
       augerLength: parseFloat(augerLength),
@@ -108,7 +115,7 @@ function App() {
       />
       <label>
         Diesel
-        <input type='radio' checked='checked' name='fuelType' value='Diesel' onChange={onChange}></input>
+        <input type='radio' name='fuelType' value='Diesel' onChange={onChange}></input>
         <span className='checkmark'></span>
       </label>
       <label>

@@ -8,10 +8,12 @@ const {
   BASE_COMBINE_WEIGHT_lbs,
 } = require('./constants');
 
-const getResult = (wheelDiameterFromUserInput, fuelType, augerLengthFromUserInput) => {
+const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelType, numOfElectricRuns) => {
+  console.log('fuelType: from getResult', fuelType);
   const COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR = 1.08;
   const COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR = 1.05;
   const COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR = 0.995;
+  const COST_USE_ELECTRIC_COMBINE_FACTOR = 1.25;
 
   const wheelDiaDiff = wheelDiameterFromUserInput - WHEEL_DIAMETER_in;
   const augerLenDiff = augerLengthFromUserInput - AUGER_LENGTH_ft;
@@ -21,13 +23,19 @@ const getResult = (wheelDiameterFromUserInput, fuelType, augerLengthFromUserInpu
   const totalNumberOfPassesRequiredToPlane =
     (NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE * TOTAL_FIELD_AREA_acre * AUGER_LENGTH_ft) / augerLengthFromUserInput;
 
-  //find out number of run using electric?
-  let totalCostPerRun;
-  totalCostPerRun =
+  const dieselCost =
     TOTAL_COST_PER_ACRE_dollar *
     TOTAL_FIELD_AREA_acre *
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR, wheelDiaDiff) *
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff);
+
+  const electricCost =
+    dieselCost *
+    COST_USE_ELECTRIC_COMBINE_FACTOR *
+    Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1);
+
+  const totalCostPerRun = fuelType === 'Diesel' ? dieselCost : electricCost;
+  console.log('electricCost:', electricCost);
 
   const totalWeight =
     BASE_COMBINE_WEIGHT_lbs *
