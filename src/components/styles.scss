@@ -7,9 +7,6 @@
   }
 }
 
-
-
-
 .report_body {
   display: flex;
 
@@ -23,7 +20,7 @@
 
 .num {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   width: 14px;
 
 }
@@ -31,19 +28,19 @@
 .wheelDia {
   display: flex;
   justify-content: flex-end;
-  width: 125px;
+  width: 85px;
 }
 
 .combineWgt {
   display: flex;
   justify-content: flex-end;
-  width: 168px;
+  width: 100px;
 }
 
 .augerLen {
   display: flex;
   justify-content: flex-end;
-  width: 107px;
+  width: 67px;
 }
 
 .fuelType {
@@ -55,7 +52,7 @@
 .totalTime {
   display: flex;
   justify-content: flex-end;
-  width: 210px;
+  width: 130px;
 }
 
 .totalCost {
@@ -72,7 +69,7 @@
 
 @media 
 only screen and (max-width: 1224px) {
-
+  
   .header{
     display: flex;
     flex-direction: column;
@@ -81,10 +78,13 @@ only screen and (max-width: 1224px) {
       font-size: smaller;
       border: solid thin black;
       padding: 3px;
-      width: 220px;
+      width: 240px;
     }
   }
 
+  .shaded :nth-of-type(odd){
+    background-color: cornflowerblue;
+  }
 
   .report_body {
     display: flex;

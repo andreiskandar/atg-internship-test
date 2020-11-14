@@ -19,6 +19,7 @@ const initialState = {
   combineWeight: 53000,
   timeSpentToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
+  numElectricRuns: 0,
   costPerRun: 0,
   totalEffieciency: 0,
   report: [],
@@ -40,21 +41,31 @@ function App() {
   const isTabletOrMobile = useMediaQuery({
     query: '(max-width: 1224px)',
   });
+
   const [state, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
     getSimulationReport();
-  }, []);
+  }, [state.numElectricRuns]);
 
   const getSimulationReport = async () => {
     try {
       const reportData = await API.graphql(graphqlOperation(listSimulationReports));
       dispatch({ type: 'SET_REPORT', report: reportData.data.listSimulationReports.items });
+
+      const electricRuns = state.report.filter((run) => run.fuelType === 'Electric').length;
+      dispatch({ type: 'SET_INPUT', key: 'numElectricRuns', value: electricRuns });
     } catch (err) {
       console.log('error fetching report...', err);
     }
   };
 
-  const renderReport = state.report.map((item, index) => <Report key={index} item={item} index={index} />);
+  const renderReport = state.report.map((item, index) => (
+    <>
+      <Report key={index} item={item} index={index} />
+      {isTabletOrMobile && <br />}
+    </>
+  ));
 
   const createSimulationReport = async () => {
     const { wheelDiameter, augerLength, fuelType } = state;
@@ -106,6 +117,7 @@ function App() {
         <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
       </label>
       <button onClick={createSimulationReport}>Create Report</button>
+
       {!isTabletOrMobile && <Header />}
       {renderReport}
     </div>

@@ -19,8 +19,10 @@ const Report = ({ item, index }) => {
         <div className='content__report_body augerLen'>{item.augerLength || AUGER_LENGTH_ft}</div>
         <div className='content__report_body fuelType'>{item.fuelType}</div>
         <div className='content__report_body totalTime'>{roundTo(item.timeSpentToPlaneTheField, 0)}</div>
-        <div className='content__report_body totalCost'>$ {roundTo(item.costPerRun, 2)}</div>
-        <div className='content__report_body numPasses'></div>
+        <div className='content__report_body totalCost'>
+          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.costPerRun)}
+        </div>
+        <div className='content__report_body numPasses'>1</div>
 
         {/* <p>fuel type : {item.fuelType} </p>
       <p>total time to plane the field: {roundTo(item.timeSpentToPlaneTheField, 0)} min</p>
