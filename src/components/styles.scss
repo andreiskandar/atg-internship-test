@@ -19,7 +19,6 @@
     padding: 3px;
   }
 
-  
 }
 
 .num {
@@ -69,4 +68,41 @@
   display: flex;
   justify-content: flex-end;
   width: 158px;
+}
+
+@media 
+only screen and (max-width: 1224px) {
+
+  .header{
+    display: flex;
+    flex-direction: column;
+    .title__header {
+      justify-content: flex-start;
+      font-size: smaller;
+      border: solid thin black;
+      padding: 3px;
+      width: 220px;
+    }
+  }
+
+
+  .report_body {
+    display: flex;
+    flex-direction: column;
+
+    .content__report_body {
+      font-size: smaller;
+      border: solid thin black;
+      padding: 3px;
+    }
+
+    .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses {
+      width: 100px;
+    }
+
+  }
+
+  .isTabletOrMobile {
+    display: flex;
+  }
 }

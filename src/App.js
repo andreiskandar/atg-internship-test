@@ -3,6 +3,7 @@ import React, { useEffect, useReducer } from 'react';
 import Header from './components/Header';
 // import Input from './components/Input';
 import Report from './components/Report';
+import { useMediaQuery } from 'react-responsive';
 
 import { listSimulationReports } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
@@ -36,6 +37,9 @@ function reducer(state, action) {
   }
 }
 function App() {
+  const isTabletOrMobile = useMediaQuery({
+    query: '(max-width: 1224px)',
+  });
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
     getSimulationReport();
@@ -50,7 +54,7 @@ function App() {
     }
   };
 
-  const renderReport = state.report.map((item, index) => <Report item={item} index={index} />);
+  const renderReport = state.report.map((item, index) => <Report key={index} item={item} index={index} />);
 
   const createSimulationReport = async () => {
     const { wheelDiameter, augerLength, fuelType } = state;
@@ -102,7 +106,7 @@ function App() {
         <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
       </label>
       <button onClick={createSimulationReport}>Create Report</button>
-      <Header />
+      {!isTabletOrMobile && <Header />}
       {renderReport}
     </div>
   );
@@ -112,5 +116,4 @@ export default App;
 
 // time_per_pass: Float!
 //   time_taken_to_plane_the_field: Float!
-//   cost_per_run: Float!
 //   total_efficiency: Float!

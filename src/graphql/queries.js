@@ -60,6 +60,7 @@ export const listSimulationReports = /* GraphQL */ `
         timeSpentToPlaneTheField
         costPerRun
         percentageOfFieldChosenToCover
+
         createdAt
         updatedAt
       }
