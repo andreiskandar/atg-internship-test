@@ -9,7 +9,7 @@ const {
 } = require('./constants');
 
 const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelType, numOfElectricRuns) => {
-  console.log('fuelType: from getResult', fuelType);
+  console.log('numOfElectricRuns:', numOfElectricRuns);
   const COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR = 1.08;
   const COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR = 1.05;
   const COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR = 0.995;
@@ -35,7 +35,6 @@ const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelTyp
     Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1);
 
   const totalCostPerRun = fuelType === 'Diesel' ? dieselCost : electricCost;
-  console.log('electricCost:', electricCost);
 
   const totalWeight =
     BASE_COMBINE_WEIGHT_lbs *

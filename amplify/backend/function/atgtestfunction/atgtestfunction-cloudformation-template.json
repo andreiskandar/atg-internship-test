@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-atginternshiptest-dev-183052-deployment",
-          "S3Key": "amplify-builds/atgtestfunction-624d514e4966414c7844-build.zip"
+          "S3Key": "amplify-builds/atgtestfunction-443745355a5074425344-build.zip"
         }
       }
     },

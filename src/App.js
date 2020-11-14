@@ -15,7 +15,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 const initialState = {
   wheelDiameter: '',
   augerLength: '',
-  fuelType: '',
+  fuelType: 'Electric',
   combineWeight: 53000,
   timeSpentToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
@@ -54,8 +54,7 @@ function App() {
       dispatch({ type: 'SET_REPORT', report: reportData.data.listSimulationReports.items });
 
       const electricRuns = state.report.filter((run) => run.fuelType === 'Electric').length;
-      dispatch({ type: 'SET_INPUT', key: 'numElectricRuns', value: electricRuns });
-      console.log('fuelType:', state.fuelType);
+      dispatch({ type: 'SET_INPUT', key: 'numElectricRuns', value: electricRuns && electricRuns });
     } catch (err) {
       console.log('error fetching report...', err);
     }
@@ -125,7 +124,11 @@ function App() {
       </label>
       <button onClick={createSimulationReport}>Create Report</button>
 
+      <br />
+      <br />
+      <br />
       {!isTabletOrMobile && <Header />}
+
       {renderReport}
     </div>
   );
