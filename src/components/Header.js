@@ -15,7 +15,7 @@ const Header = () => {
       <div className='title__header fuelType'>Fuel Type</div>
       <div className='title__header totalTime'>Time Taken To Plane The Field (min)</div>
       <div className='title__header totalCost'>Cost/Run</div>
-      <div className='title__header'>Num Of Passes To Plane The Field</div>
+      <div className='title__header electricRuns'># Electric Runs</div>
     </div>
   );
 };

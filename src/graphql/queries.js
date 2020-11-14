@@ -12,22 +12,15 @@ export const getSimulationReport = /* GraphQL */ `
       timeSpentToPlaneTheField
       costPerRun
       percentageOfFieldChosenToCover
+      numOfElectricRuns
       createdAt
       updatedAt
     }
   }
 `;
 export const listSimulationReports = /* GraphQL */ `
-  query ListSimulationReports(
-    $filter: ModelsimulationReportFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listSimulationReports(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
+  query ListSimulationReports($filter: ModelsimulationReportFilterInput, $limit: Int, $nextToken: String) {
+    listSimulationReports(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         combineWeight
@@ -37,10 +30,21 @@ export const listSimulationReports = /* GraphQL */ `
         timeSpentToPlaneTheField
         costPerRun
         percentageOfFieldChosenToCover
+        numOfElectricRuns
         createdAt
         updatedAt
       }
       nextToken
     }
   }
+`;
+
+export const getNumOfElectricRuns = `
+query getNumOfElectricRuns {
+  listSimulationReports(filter: {fuelType: {eq: "Electric"}}) {
+    items {
+      id
+    }
+  }
+}
 `;

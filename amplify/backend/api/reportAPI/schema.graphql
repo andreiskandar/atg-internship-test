@@ -7,4 +7,5 @@ type simulationReport @model {
   timeSpentToPlaneTheField: Float
   costPerRun: Float
   percentageOfFieldChosenToCover: Float
+  numOfElectricRuns: Int
 }

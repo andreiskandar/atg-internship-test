@@ -5,7 +5,7 @@ import Header from './components/Header';
 import Report from './components/Report';
 import { useMediaQuery } from 'react-responsive';
 
-import { listSimulationReports } from './graphql/queries';
+import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
 
 import { getResult } from './helpers/calculation';
@@ -19,9 +19,10 @@ const initialState = {
   combineWeight: 53000,
   timeSpentToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
-  numElectricRuns: 0,
+  numOfElectricRuns: 0,
   costPerRun: 0,
   totalEffieciency: 0,
+  radioChecked: false,
   report: [],
 };
 
@@ -52,11 +53,22 @@ function App() {
     try {
       const reportData = await API.graphql(graphqlOperation(listSimulationReports));
       dispatch({ type: 'SET_REPORT', report: reportData.data.listSimulationReports.items });
-
-      const electricRuns = state.report.filter((run) => run.fuelType === 'Electric').length;
-      dispatch({ type: 'SET_INPUT', key: 'numElectricRuns', value: electricRuns && electricRuns });
+      console.log('reportData.data.listSimulationReports.items:', reportData.data.listSimulationReports.items);
     } catch (err) {
       console.log('error fetching report...', err);
+    }
+  };
+
+  const getNumOfElectricRuns = async () => {
+    try {
+      const electricRuns = await API.graphql(graphqlOperation(getNumOfElectricRunsQuery));
+      dispatch({
+        type: 'SET_INPUT',
+        key: 'numOfElectricRuns',
+        value: electricRuns.data.listSimulationReports.items.length,
+      });
+    } catch (err) {
+      console.log('error fetching electric runs', err);
     }
   };
 
@@ -68,17 +80,23 @@ function App() {
   ));
 
   const createSimulationReport = async () => {
-    const { wheelDiameter, augerLength, fuelType, numElectricRuns } = state;
+    getNumOfElectricRuns();
+    const { wheelDiameter, augerLength, fuelType } = state;
+    let { numOfElectricRuns } = state;
+
+    if (fuelType === 'Electric') {
+      dispatch({ type: 'SET_INPUT', key: 'numOfElectricRuns', value: numOfElectricRuns++ });
+    }
+
     // think about edge case when user only changes one of the parameters
 
     const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
       wheelDiameter,
       augerLength,
       fuelType,
-      numElectricRuns
+      numOfElectricRuns
     );
 
-    console.log('totalCostPerRun: inside app', totalCostPerRun);
     const newReport = {
       wheelDiameter: parseInt(wheelDiameter),
       augerLength: parseFloat(augerLength),
@@ -86,6 +104,7 @@ function App() {
       combineWeight: totalWeight,
       timeSpentToPlaneTheField: totalTimeToPlaneField,
       costPerRun: totalCostPerRun,
+      numOfElectricRuns,
     };
 
     const report = [...state.report, newReport];
@@ -114,13 +133,27 @@ function App() {
       />
       <label>
         Diesel
-        <input type='radio' name='fuelType' value='Diesel' onChange={onChange}></input>
+        <input
+          type='radio'
+          name='fuelType'
+          value='Diesel'
+          onChange={onChange}
+          onClick={() => (state.radioChecked = true)}
+          checked={state.radioChecked}
+        ></input>
         <span className='checkmark'></span>
       </label>
       <label>
         Electric
         <span className='checkmark'></span>
-        <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
+        <input
+          type='radio'
+          name='fuelType'
+          value='Electric'
+          onChange={onChange}
+          onClick={() => (state.radioChecked = true)}
+          checked={state.radioChecked}
+        ></input>
       </label>
       <button onClick={createSimulationReport}>Create Report</button>
 
@@ -136,6 +169,10 @@ function App() {
 
 export default App;
 
-// time_per_pass: Float!
-//   time_taken_to_plane_the_field: Float!
-//   total_efficiency: Float!
+// query getNumOfElectricRuns {
+//   listSimulationReports(filter: {fuelType: {eq: "Electric"}}) {
+//     items {
+//       id
+//     }
+//   }
+// }

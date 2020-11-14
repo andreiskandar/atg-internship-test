@@ -12,6 +12,7 @@ export const onCreateSimulationReport = /* GraphQL */ `
       timeSpentToPlaneTheField
       costPerRun
       percentageOfFieldChosenToCover
+      numOfElectricRuns
       createdAt
       updatedAt
     }
@@ -28,6 +29,7 @@ export const onUpdateSimulationReport = /* GraphQL */ `
       timeSpentToPlaneTheField
       costPerRun
       percentageOfFieldChosenToCover
+      numOfElectricRuns
       createdAt
       updatedAt
     }
@@ -44,6 +46,7 @@ export const onDeleteSimulationReport = /* GraphQL */ `
       timeSpentToPlaneTheField
       costPerRun
       percentageOfFieldChosenToCover
+      numOfElectricRuns
       createdAt
       updatedAt
     }

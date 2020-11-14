@@ -30,9 +30,11 @@ const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelTyp
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff);
 
   const electricCost =
-    dieselCost *
-    COST_USE_ELECTRIC_COMBINE_FACTOR *
-    Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1);
+    numOfElectricRuns === 1
+      ? dieselCost * COST_USE_ELECTRIC_COMBINE_FACTOR
+      : dieselCost *
+        COST_USE_ELECTRIC_COMBINE_FACTOR *
+        Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1);
 
   const totalCostPerRun = fuelType === 'Diesel' ? dieselCost : electricCost;
 
