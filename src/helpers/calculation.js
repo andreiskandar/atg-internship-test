@@ -36,7 +36,7 @@ const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelTyp
         COST_USE_ELECTRIC_COMBINE_FACTOR *
         Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1);
 
-  const totalCostPerRun = fuelType === 'Diesel' ? dieselCost : electricCost;
+  const totalCostPerRun = fuelType === 'Electric' ? electricCost : dieselCost;
 
   const totalWeight =
     BASE_COMBINE_WEIGHT_lbs *

@@ -2,6 +2,7 @@ import React, { useEffect, useReducer } from 'react';
 
 import Header from './components/Header';
 // import Input from './components/Input';
+import FuelTypeInput from './components/FuelTypeInput';
 import Report from './components/Report';
 import { useMediaQuery } from 'react-responsive';
 
@@ -15,7 +16,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 const initialState = {
   wheelDiameter: '',
   augerLength: '',
-  fuelType: 'Electric',
+  fuelType: null,
   combineWeight: 53000,
   timeSpentToPlaneTheField: 0,
   percentageOfFieldChosenToCover: 0,
@@ -34,6 +35,9 @@ function reducer(state, action) {
       return { ...state, [action.key]: action.value };
     case 'CLEAR_INPUT':
       return { ...initialState, report: state.report };
+    case 'SET_RADIO_BTN':
+      return { ...state, radioChecked: true };
+
     default:
       return state;
   }
@@ -47,13 +51,13 @@ function App() {
 
   useEffect(() => {
     getSimulationReport();
+    getNumOfElectricRuns();
   }, []);
 
   const getSimulationReport = async () => {
     try {
       const reportData = await API.graphql(graphqlOperation(listSimulationReports));
       dispatch({ type: 'SET_REPORT', report: reportData.data.listSimulationReports.items });
-      console.log('reportData.data.listSimulationReports.items:', reportData.data.listSimulationReports.items);
     } catch (err) {
       console.log('error fetching report...', err);
     }
@@ -62,6 +66,7 @@ function App() {
   const getNumOfElectricRuns = async () => {
     try {
       const electricRuns = await API.graphql(graphqlOperation(getNumOfElectricRunsQuery));
+      console.log('electricRuns:', electricRuns.data.listSimulationReports.items.length);
       dispatch({
         type: 'SET_INPUT',
         key: 'numOfElectricRuns',
@@ -71,13 +76,6 @@ function App() {
       console.log('error fetching electric runs', err);
     }
   };
-
-  const renderReport = state.report.map((item, index) => (
-    <>
-      <Report key={index} item={item} index={index} />
-      {isTabletOrMobile && <br />}
-    </>
-  ));
 
   const createSimulationReport = async () => {
     getNumOfElectricRuns();
@@ -119,42 +117,25 @@ function App() {
   };
 
   function onChange(e) {
+    if (e.target.name === 'fuelType') {
+      dispatch({ type: 'SET_RADIO_BTN' });
+    }
+
     dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
   }
+
+  const renderReport = state.report.map((item, index) => (
+    <>
+      <Report key={index} item={item} index={index} />
+      {isTabletOrMobile && <br />}
+    </>
+  ));
 
   return (
     <div className='App'>
       <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
-      <input
-        name='augerLength'
-        onChange={onChange}
-        value={state.augerLength}
-        placeholder='augerLength in ft max:25.7'
-      />
-      <label>
-        Diesel
-        <input
-          type='radio'
-          name='fuelType'
-          value='Diesel'
-          onChange={onChange}
-          onClick={() => (state.radioChecked = true)}
-          checked={state.radioChecked}
-        ></input>
-        <span className='checkmark'></span>
-      </label>
-      <label>
-        Electric
-        <span className='checkmark'></span>
-        <input
-          type='radio'
-          name='fuelType'
-          value='Electric'
-          onChange={onChange}
-          onClick={() => (state.radioChecked = true)}
-          checked={state.radioChecked}
-        ></input>
-      </label>
+      <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' />
+      <FuelTypeInput onChange={onChange} radioChecked={state.radioChecked} />
       <button onClick={createSimulationReport}>Create Report</button>
 
       <br />
