@@ -1,47 +1,49 @@
 import React, { useEffect, useReducer } from 'react';
 
+import { API, graphqlOperation } from 'aws-amplify';
+import { useMediaQuery } from 'react-responsive';
+
 import Header from './components/Header';
 // import Input from './components/Input';
 import FuelTypeInput from './components/FuelTypeInput';
 import Report from './components/Report';
-import { useMediaQuery } from 'react-responsive';
 
 import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
 
 import { getResult } from './helpers/calculation';
+import { initialState, reducer } from './hooks/useReducer';
 
-import { API, graphqlOperation } from 'aws-amplify';
+// const initialState = {
+//   wheelDiameter: '',
+//   augerLength: '',
+//   fuelType: null,
+//   combineWeight: 53000,
+//   timeSpentToPlaneTheField: 0,
+//   percentageOfFieldChosenToCover: 0,
+//   numOfElectricRuns: 0,
+//   costPerRun: 0,
+//   totalEffieciency: 0,
+//   radioChecked: false,
+//   report: [],
+// };
 
-const initialState = {
-  wheelDiameter: '',
-  augerLength: '',
-  fuelType: null,
-  combineWeight: 53000,
-  timeSpentToPlaneTheField: 0,
-  percentageOfFieldChosenToCover: 0,
-  numOfElectricRuns: 0,
-  costPerRun: 0,
-  totalEffieciency: 0,
-  radioChecked: false,
-  report: [],
-};
+// function reducer(state, action) {
+//   switch (action.type) {
+//     case 'SET_REPORT':
+//       return { ...state, report: action.report };
+//     case 'SET_INPUT':
+//       return { ...state, [action.key]: action.value };
+//     case 'CLEAR_INPUT':
+//       return { ...initialState, report: state.report };
+//     case 'SET_RADIO_BTN':
+//       return { ...state, radioChecked: true };
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'SET_REPORT':
-      return { ...state, report: action.report };
-    case 'SET_INPUT':
-      return { ...state, [action.key]: action.value };
-    case 'CLEAR_INPUT':
-      return { ...initialState, report: state.report };
-    case 'SET_RADIO_BTN':
-      return { ...state, radioChecked: true };
+//     default:
+//       return state;
+//   }
+// }
 
-    default:
-      return state;
-  }
-}
 function App() {
   const isTabletOrMobile = useMediaQuery({
     query: '(max-width: 1224px)',
@@ -77,7 +79,6 @@ function App() {
   };
 
   const createSimulationReport = async () => {
-    // getNumOfElectricRuns();
     const { wheelDiameter, augerLength, fuelType } = state;
     let { numOfElectricRuns } = state;
 

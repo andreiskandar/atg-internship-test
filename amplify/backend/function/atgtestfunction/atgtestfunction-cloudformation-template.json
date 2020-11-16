@@ -9,6 +9,18 @@
     },
     "env": {
       "Type": "String"
+    },
+    "apireportAPIGraphQLAPIIdOutput": {
+      "Type": "String",
+      "Default": "apireportAPIGraphQLAPIIdOutput"
+    },
+    "apireportAPIGraphQLAPIEndpointOutput": {
+      "Type": "String",
+      "Default": "apireportAPIGraphQLAPIEndpointOutput"
+    },
+    "apireportAPIGraphQLAPIKeyOutput": {
+      "Type": "String",
+      "Default": "apireportAPIGraphQLAPIKeyOutput"
     }
   },
   "Conditions": {
@@ -55,6 +67,15 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
+            },
+            "API_REPORTAPI_GRAPHQLAPIIDOUTPUT": {
+              "Ref": "apireportAPIGraphQLAPIIdOutput"
+            },
+            "API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT": {
+              "Ref": "apireportAPIGraphQLAPIEndpointOutput"
+            },
+            "API_REPORTAPI_GRAPHQLAPIKEYOUTPUT": {
+              "Ref": "apireportAPIGraphQLAPIKeyOutput"
             }
           }
         },
@@ -69,7 +90,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-atginternshiptest-dev-183052-deployment",
-          "S3Key": "amplify-builds/atgtestfunction-443745355a5074425344-build.zip"
+          "S3Key": "amplify-builds/atgtestfunction-4c624e58657567786a46-build.zip"
         }
       }
     },
@@ -150,6 +171,59 @@
                   }
                 ]
               }
+            }
+          ]
+        }
+      }
+    },
+    "AmplifyResourcesPolicy": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "appsync:Create*",
+                "appsync:StartSchemaCreation",
+                "appsync:GraphQL",
+                "appsync:Get*",
+                "appsync:List*",
+                "appsync:Update*",
+                "appsync:Delete*"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:appsync:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":apis/",
+                      {
+                        "Ref": "apireportAPIGraphQLAPIIdOutput"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
             }
           ]
         }
