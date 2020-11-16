@@ -1,3 +1,7 @@
+/* Amplify Params - DO NOT EDIT
+	ENV
+	REGION
+Amplify Params - DO NOT EDIT */
 const axios = require('axios');
 
 exports.handler = function (event, _, callback) {

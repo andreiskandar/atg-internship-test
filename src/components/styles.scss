@@ -73,6 +73,18 @@
   width: 60px;
 }
 
+.fieldCoverage {
+  display: flex;
+  justify-content: flex-end;
+  width: 100px;
+}
+
+.totalEfficiency {
+  display: flex;
+  justify-content: flex-end;
+  width: 90px;
+}
+
 @media 
 only screen and (max-width: 1224px) {
   
@@ -102,7 +114,7 @@ only screen and (max-width: 1224px) {
       padding: 3px;
     }
 
-    .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns {
+    .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns, .fieldCoverage, .totalEfficiency {
       width: 100px;
     }
 

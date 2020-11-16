@@ -32,6 +32,8 @@ const Report = ({ item, index }) => {
           {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.costPerRun)}
         </div>
         <div className='content__report_body electricRuns'>{item.numOfElectricRuns || 0}</div>
+        <div className='content__report_body fieldCoverage'>{0}</div>
+        <div className='content__report_body totalEfficiency'>{0}</div>
 
         {/* <p>fuel type : {item.fuelType} </p>
       <p>total time to plane the field: {roundTo(item.timeSpentToPlaneTheField, 0)} min</p>

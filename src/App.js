@@ -66,7 +66,6 @@ function App() {
   const getNumOfElectricRuns = async () => {
     try {
       const electricRuns = await API.graphql(graphqlOperation(getNumOfElectricRunsQuery));
-      console.log('electricRuns:', electricRuns.data.listSimulationReports.items.length);
       dispatch({
         type: 'SET_INPUT',
         key: 'numOfElectricRuns',
@@ -78,7 +77,7 @@ function App() {
   };
 
   const createSimulationReport = async () => {
-    getNumOfElectricRuns();
+    // getNumOfElectricRuns();
     const { wheelDiameter, augerLength, fuelType } = state;
     let { numOfElectricRuns } = state;
 

@@ -9,7 +9,6 @@ const {
 } = require('./constants');
 
 const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelType, numOfElectricRuns) => {
-  console.log('numOfElectricRuns:', numOfElectricRuns);
   const COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR = 1.08;
   const COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR = 1.05;
   const COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR = 0.995;
@@ -42,6 +41,7 @@ const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelTyp
     BASE_COMBINE_WEIGHT_lbs *
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR, wheelDiaDiff) *
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff);
+
   const totalTimeToPlaneField =
     (totalNumberOfPassesRequiredToPlane * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR) ^ wheelDiaDiff;
 
