@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "api": {
+      "reportAPI": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

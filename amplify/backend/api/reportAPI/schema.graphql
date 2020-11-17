@@ -1,4 +1,4 @@
-type simulationReport @model {
+type simulationReport @model { 
   id: ID!
   combineWeight: Float!
   wheelDiameter: Int!
@@ -9,3 +9,4 @@ type simulationReport @model {
   percentageOfFieldChosenToCover: Float
   numOfElectricRuns: Int
 }
+

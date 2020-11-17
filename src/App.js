@@ -7,6 +7,7 @@ import Header from './components/Header';
 // import Input from './components/Input';
 import FuelTypeInput from './components/FuelTypeInput';
 import Report from './components/Report';
+import Error from './components/Error';
 
 import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
 import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
