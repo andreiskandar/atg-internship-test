@@ -10,3 +10,9 @@ type simulationReport @model {
   numOfElectricRuns: Int
 }
 
+type userInput @model {
+  id: ID!
+  wheelDiameter: Int!
+  fuelType: String!
+  augerLength: Float!
+}

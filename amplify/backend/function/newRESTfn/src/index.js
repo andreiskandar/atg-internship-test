@@ -64,7 +64,8 @@ const listSimulationReports = gql`
 // };
 
 exports.handler = async (event, _, callback) => {
-  console.log('event:', event.body);
+  console.log('event:', event);
+
   try {
     const graphqlData = await axios({
       url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
@@ -87,14 +88,14 @@ exports.handler = async (event, _, callback) => {
       graphqlData: graphqlData.data.data.listSimulationReports,
     };
     console.log(body.graphqlData.items);
-    callback(null, body.graphqlData.items);
-    // return {
-    //   statusCode: 200,
-    //   body: JSON.stringify(body),
-    //   headers: {
-    //     'Access-Control-Allow-Origin': '*',
-    //   },
-    // };
+    // callback(null, body.graphqlData.items);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(body),
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+      },
+    };
   } catch (err) {
     console.log('error posting to appsync: ', err);
   }

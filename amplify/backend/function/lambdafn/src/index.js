@@ -112,7 +112,7 @@ exports.handler = async (event, _, callback) => {
       graphqlData: graphqlData.data.data.listTodos,
     };
     console.log(body.graphqlData.items);
-    callback(null, body.graphqlData.items);
+    callback(null, event);
     // return {
     //   statusCode: 200,
     //   body: JSON.stringify(body),
