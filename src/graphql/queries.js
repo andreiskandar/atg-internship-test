@@ -19,16 +19,8 @@ export const getSimulationReport = /* GraphQL */ `
   }
 `;
 export const listSimulationReports = /* GraphQL */ `
-  query ListSimulationReports(
-    $filter: ModelsimulationReportFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listSimulationReports(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
+  query ListSimulationReports($filter: ModelsimulationReportFilterInput, $limit: Int, $nextToken: String) {
+    listSimulationReports(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         combineWeight
@@ -46,32 +38,13 @@ export const listSimulationReports = /* GraphQL */ `
     }
   }
 `;
-export const getTodo = /* GraphQL */ `
-  query GetTodo($id: ID!) {
-    getTodo(id: $id) {
+
+export const getNumOfElectricRuns = `
+query getNumOfElectricRuns {
+  listSimulationReports(filter: {fuelType: {eq: "Electric"}}) {
+    items {
       id
-      name
-      description
-      createdAt
-      updatedAt
     }
   }
-`;
-export const listTodos = /* GraphQL */ `
-  query ListTodos(
-    $filter: ModelTodoFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        description
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
+}
 `;

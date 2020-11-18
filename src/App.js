@@ -55,7 +55,15 @@ function App() {
   useEffect(() => {
     getSimulationReport();
     getNumOfElectricRuns();
+
+    API.get(apiName, path)
+      .then((res) => console.log(res))
+      .catch((err) => console.log('err from API get', err));
   }, []);
+
+  const apiName = 'newRESTAPI';
+
+  const path = '/report';
 
   const getSimulationReport = async () => {
     try {
@@ -106,12 +114,11 @@ function App() {
       numOfElectricRuns,
     };
 
-    const report = [...state.report, newReport];
-    dispatch({ type: 'SET_REPORT', report });
-    dispatch({ type: 'CLEAR_INPUT' });
-
     try {
       await API.graphql(graphqlOperation(CreateSimulationReport, { input: newReport }));
+      const report = [...state.report, newReport];
+      dispatch({ type: 'SET_REPORT', report });
+      dispatch({ type: 'CLEAR_INPUT' });
     } catch (err) {
       console.log('error creating simulation report', err);
     }
@@ -151,6 +158,7 @@ function App() {
 
 export default App;
 
+// export const getNumOfElectricRuns = `
 // query getNumOfElectricRuns {
 //   listSimulationReports(filter: {fuelType: {eq: "Electric"}}) {
 //     items {
@@ -158,3 +166,4 @@ export default App;
 //     }
 //   }
 // }
+// `;

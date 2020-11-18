@@ -1,0 +1,35 @@
+{
+    "paths": [
+        {
+            "name": "/report",
+            "lambdaFunction": "newRESTfn",
+            "privacy": {
+                "open": true
+            }
+        }
+    ],
+    "resourceName": "newRESTAPI",
+    "apiName": "newRESTAPI",
+    "functionArns": [
+        {
+            "lambdaFunction": "newRESTfn"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-atginternshiptest-dev-183052-authRole",
+        "unAuthRoleName": "amplify-atginternshiptest-dev-183052-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "newRESTfn",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "822e08a6"
+}

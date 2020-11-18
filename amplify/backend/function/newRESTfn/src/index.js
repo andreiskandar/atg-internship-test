@@ -3,6 +3,7 @@
 	API_REPORTAPI_GRAPHQLAPIIDOUTPUT
 	API_REPORTAPI_GRAPHQLAPIKEYOUTPUT
 	ENV
+	FUNCTION_LAMBDAFN_NAME
 	REGION
 Amplify Params - DO NOT EDIT */
 
@@ -13,23 +14,24 @@ const graphql = require('graphql');
 
 const { print } = graphql;
 
-// const listSimulationReports = gql`
-//   query MyQuery {
-//     listSimulationReports {
-//       items {
-//         augerLength
-//         combineWeight
-//         costPerRun
-//         fuelType
-//         id
-//         numOfElectricRuns
-//         percentageOfFieldChosenToCover
-//         timeSpentToPlaneTheField
-//         wheelDiameter
-//       }
-//     }
-//   }
-// `;
+const listSimulationReports = gql`
+  query MyQuery {
+    listSimulationReports {
+      items {
+        augerLength
+        combineWeight
+        costPerRun
+        fuelType
+        id
+        numOfElectricRuns
+        percentageOfFieldChosenToCover
+        timeSpentToPlaneTheField
+        wheelDiameter
+        createdAt
+      }
+    }
+  }
+`;
 
 // exports.handler = async (event) => {
 //   try {
@@ -61,33 +63,6 @@ const { print } = graphql;
 //   }
 // };
 
-// const axios = require('axios');
-// const gql = require('graphql-tag');
-// const graphql = require('graphql');
-// const { print } = graphql;
-
-const listTodos = gql`
-  query listTodos {
-    listTodos {
-      items {
-        id
-        name
-        description
-      }
-    }
-  }
-`;
-
-const createTodo = gql`
-  mutation createTodo($input: CreateTodoInput!) {
-    createTodo(input: $input) {
-      id
-      name
-      description
-    }
-  }
-`;
-
 exports.handler = async (event, _, callback) => {
   console.log('event:', event.body);
   try {
@@ -98,7 +73,7 @@ exports.handler = async (event, _, callback) => {
         'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
       },
       data: {
-        query: print(listTodos),
+        query: print(listSimulationReports),
         // variables: {
         //   input: {
         //     name: 'Hello world! frm Andre',
@@ -109,7 +84,7 @@ exports.handler = async (event, _, callback) => {
     });
     const body = {
       // message: 'successfully created todo!',
-      graphqlData: graphqlData.data.data.listTodos,
+      graphqlData: graphqlData.data.data.listSimulationReports,
     };
     console.log(body.graphqlData.items);
     callback(null, body.graphqlData.items);

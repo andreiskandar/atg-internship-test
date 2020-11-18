@@ -26,18 +26,18 @@ const map = () => {
   console.log('ob:', ob);
 
   // for (let h = 0; h < obLeng; h++) {
-  for (let i = 0; i < max; i++) {
-    for (let j = 0; j < max; j++) {
-      if (i === ob[0][0] && j === ob[0][1]) {
-        console.log(' 1 ');
-      } else {
-        console.log(' 0 ');
-      }
-    }
-    console.log('\n');
-  }
+  // for (let i = 0; i < max; i++) {
+  //   for (let j = 0; j < max; j++) {
+  //     if (i === ob[0][0] && j === ob[0][1]) {
+  //       console.log(' 1 ');
+  //     } else {
+  //       console.log(' 0 ');
+  //     }
+  //   }
+  //   console.log('\n');
   // }
-  console.log('fieldMap:', fieldMap);
+  // }
+  // console.log('fieldMap:', fieldMap);
   return fieldMap;
 };
 
