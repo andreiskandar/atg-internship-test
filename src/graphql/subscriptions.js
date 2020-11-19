@@ -52,3 +52,39 @@ export const onDeleteSimulationReport = /* GraphQL */ `
     }
   }
 `;
+export const onCreateUserInput = /* GraphQL */ `
+  subscription OnCreateUserInput {
+    onCreateUserInput {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateUserInput = /* GraphQL */ `
+  subscription OnUpdateUserInput {
+    onUpdateUserInput {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteUserInput = /* GraphQL */ `
+  subscription OnDeleteUserInput {
+    onDeleteUserInput {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;

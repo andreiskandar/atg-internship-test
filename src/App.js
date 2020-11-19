@@ -8,42 +8,16 @@ import Header from './components/Header';
 import FuelTypeInput from './components/FuelTypeInput';
 import Report from './components/Report';
 import Error from './components/Error';
-
+import { v4 as uuidv4 } from 'uuid';
 import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
-import { createSimulationReport as CreateSimulationReport } from './graphql/mutations';
+import {
+  createSimulationReport as CreateSimulationReport,
+  createUserInput,
+  createUserInput as CreateUserInput,
+} from './graphql/mutations';
 
 import { getResult } from './helpers/calculation';
 import { initialState, reducer } from './hooks/useReducer';
-
-// const initialState = {
-//   wheelDiameter: '',
-//   augerLength: '',
-//   fuelType: null,
-//   combineWeight: 53000,
-//   timeSpentToPlaneTheField: 0,
-//   percentageOfFieldChosenToCover: 0,
-//   numOfElectricRuns: 0,
-//   costPerRun: 0,
-//   totalEffieciency: 0,
-//   radioChecked: false,
-//   report: [],
-// };
-
-// function reducer(state, action) {
-//   switch (action.type) {
-//     case 'SET_REPORT':
-//       return { ...state, report: action.report };
-//     case 'SET_INPUT':
-//       return { ...state, [action.key]: action.value };
-//     case 'CLEAR_INPUT':
-//       return { ...initialState, report: state.report };
-//     case 'SET_RADIO_BTN':
-//       return { ...state, radioChecked: true };
-
-//     default:
-//       return state;
-//   }
-// }
 
 function App() {
   const isTabletOrMobile = useMediaQuery({
@@ -53,7 +27,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    getSimulationReport();
+    // getSimulationReport();
     getNumOfElectricRuns();
 
     API.get(apiName, path)
@@ -62,7 +36,6 @@ function App() {
   }, []);
 
   const apiName = 'newRESTAPI';
-
   const path = '/report';
 
   const getSimulationReport = async () => {
@@ -104,7 +77,9 @@ function App() {
       numOfElectricRuns
     );
 
+    const id = uuidv4();
     const newReport = {
+      id: id,
       wheelDiameter: parseInt(wheelDiameter),
       augerLength: parseFloat(augerLength),
       fuelType,
@@ -114,6 +89,19 @@ function App() {
       numOfElectricRuns,
     };
 
+    // const userInput = {
+    //   body: { wheelDiameter, augerLength, fuelType },
+    // };
+    // const postAPI = await API.post(apiName, path, userInput);
+    // await API.post(apiName, path, userInput)
+    //   .then((res) => {
+    //     console.log(res.body);
+    //     console.log(`posted wheelDiameter: ${wheelDiameter}, augerLength: ${augerLength}, fuelType: ${fuelType}`);
+    //   })
+    //   .catch((err) => console.log('err from API.post', err));
+
+    // console.log('postAPI: ', { postAPI });
+
     try {
       await API.graphql(graphqlOperation(CreateSimulationReport, { input: newReport }));
       const report = [...state.report, newReport];
@@ -121,6 +109,17 @@ function App() {
       dispatch({ type: 'CLEAR_INPUT' });
     } catch (err) {
       console.log('error creating simulation report', err);
+    }
+  };
+
+  const handleUserInput = async () => {
+    const { wheelDiameter, augerLength, fuelType } = state;
+    const userInput = { wheelDiameter, augerLength, fuelType };
+    try {
+      await API.graphql(graphqlOperation(CreateUserInput, { input: userInput }));
+      dispatch({ type: 'CLEAR_INPUT' });
+    } catch (err) {
+      console.log('err from mutating userInput', err);
     }
   };
 
@@ -144,7 +143,8 @@ function App() {
       <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' />
       <FuelTypeInput onChange={onChange} radioChecked={state.radioChecked} />
-      <button onClick={createSimulationReport}>Create Report</button>
+      <button onClick={getSimulationReport}>Generate Report</button>
+      <button onClick={handleUserInput}>Enter</button>
 
       <br />
       <br />
@@ -167,3 +167,12 @@ export default App;
 //   }
 // }
 // `;
+
+//click button create report
+// Backend
+// lambda function obtain all the parameters
+// use the parameters to create report
+// mutate the table using the id and results
+
+//getSimulationReport
+//

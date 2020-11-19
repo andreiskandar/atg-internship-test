@@ -61,3 +61,48 @@ export const deleteSimulationReport = /* GraphQL */ `
     }
   }
 `;
+export const createUserInput = /* GraphQL */ `
+  mutation CreateUserInput(
+    $input: CreateUserInputInput!
+    $condition: ModeluserInputConditionInput
+  ) {
+    createUserInput(input: $input, condition: $condition) {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUserInput = /* GraphQL */ `
+  mutation UpdateUserInput(
+    $input: UpdateUserInputInput!
+    $condition: ModeluserInputConditionInput
+  ) {
+    updateUserInput(input: $input, condition: $condition) {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserInput = /* GraphQL */ `
+  mutation DeleteUserInput(
+    $input: DeleteUserInputInput!
+    $condition: ModeluserInputConditionInput
+  ) {
+    deleteUserInput(input: $input, condition: $condition) {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;

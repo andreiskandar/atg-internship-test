@@ -1,5 +1,5 @@
 import React from 'react';
-import { ob } from '../helpers/obstacles';
+import { ob } from '../helpers/obstaclesGenerator';
 
 const Error = ({ message }) => {
   return (

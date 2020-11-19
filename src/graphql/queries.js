@@ -38,6 +38,33 @@ export const listSimulationReports = /* GraphQL */ `
     }
   }
 `;
+export const getUserInput = /* GraphQL */ `
+  query GetUserInput($id: ID!) {
+    getUserInput(id: $id) {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUserInputs = /* GraphQL */ `
+  query ListUserInputs($filter: ModeluserInputFilterInput, $limit: Int, $nextToken: String) {
+    listUserInputs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        wheelDiameter
+        fuelType
+        augerLength
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 
 export const getNumOfElectricRuns = `
 query getNumOfElectricRuns {
