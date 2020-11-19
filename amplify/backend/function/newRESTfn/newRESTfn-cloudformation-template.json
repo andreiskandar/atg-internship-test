@@ -111,7 +111,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-atginternshiptest-dev-183052-deployment",
-          "S3Key": "amplify-builds/newRESTfn-67466868626430357859-build.zip"
+          "S3Key": "amplify-builds/newRESTfn-567a5a46394a77353779-build.zip"
         }
       }
     },

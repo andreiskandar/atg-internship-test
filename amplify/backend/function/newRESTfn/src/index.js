@@ -63,8 +63,48 @@ const listSimulationReports = gql`
 //   }
 // };
 
+const createUserInput = gql`
+  mutation CreateUserInput($input: CreateUserInputInput!, $condition: ModeluserInputConditionInput) {
+    createUserInput(input: $input, condition: $condition) {
+      id
+      wheelDiameter
+      fuelType
+      augerLength
+      createdAt
+      updatedAt
+    }
+  }
+`;
 exports.handler = async (event, _, callback) => {
   console.log('event:', event);
+  const requestBody = event.body;
+  console.log('requestBody:', requestBody);
+
+  try {
+    await axios({
+      url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+      method: 'post',
+      headers: {
+        'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+      },
+      data: {
+        query: print(createUserInput),
+        variables: {
+          input: requestBody,
+        },
+      },
+    });
+    const body = { message: 'inserted userInput' };
+    return {
+      statusCode: 200,
+      body: JSON.stringify(body),
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+      },
+    };
+  } catch (err) {
+    console.log('err from mutation inside lambda', err);
+  }
 
   try {
     const graphqlData = await axios({
@@ -91,7 +131,8 @@ exports.handler = async (event, _, callback) => {
     // callback(null, body.graphqlData.items);
     return {
       statusCode: 200,
-      body: JSON.stringify(body),
+      // body: JSON.stringify(body),kin
+      body: JSON.parse(requestBody),
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000',
       },
