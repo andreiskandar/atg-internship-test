@@ -11,9 +11,8 @@ require('dotenv').config();
 const axios = require('axios');
 const gql = require('graphql-tag');
 const graphql = require('graphql');
-const { getResult } = require('../helpers/calculation');
-
 const { print } = graphql;
+const { getResult } = require('../helpers/calculation');
 
 const listUserInputs = gql`
   query ListUserInputs($filter: ModeluserInputFilterInput, $limit: Int, $nextToken: String) {
@@ -158,7 +157,7 @@ exports.handler = async (event, _, callback) => {
 
     return {
       statusCode: 200,
-      body: JSON.parse(body),
+      body: JSON.stringify(body),
       // body: JSON.stringify(generateReport),
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000',
