@@ -11,100 +11,133 @@ require('dotenv').config();
 const axios = require('axios');
 const gql = require('graphql-tag');
 const graphql = require('graphql');
+const { getResult } = require('../helpers/calculation');
 
 const { print } = graphql;
 
-const listSimulationReports = gql`
-  query MyQuery {
-    listSimulationReports {
+const listUserInputs = gql`
+  query ListUserInputs($filter: ModeluserInputFilterInput, $limit: Int, $nextToken: String) {
+    listUserInputs(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-        augerLength
-        combineWeight
-        costPerRun
-        fuelType
         id
-        numOfElectricRuns
-        percentageOfFieldChosenToCover
-        timeSpentToPlaneTheField
         wheelDiameter
+        fuelType
+        augerLength
         createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+
+const getNumOfElectricRuns = gql`
+  query getNumOfElectricRuns {
+    listSimulationReports(filter: { fuelType: { eq: "Electric" } }) {
+      items {
+        id
       }
     }
   }
 `;
 
-// exports.handler = async (event) => {
-//   try {
-//     const graphqlData = await axios({
-//       method: 'POST',
-//       url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-//       headers: {
-//         'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-//       },
-//       data: {
-//         query: print(listSimulationReports),
-//       },
-//     });
-//     const body = {
-//       graphqlData: graphqlData.data.data.listSimulationReports,
-//     };
-
-//     console.log('BODY', body.graphqlData);
-
-//     return {
-//       statusCode: 200,
-//       body: JSON.stringify(body),
-//       headers: {
-//         'Access-Control-Allow-Origin': '*',
-//       },
-//     };
-//   } catch (err) {
-//     console.log('err at fetching data lambda function: ', err);
-//   }
-// };
-
-const createUserInput = gql`
-  mutation CreateUserInput($input: CreateUserInputInput!, $condition: ModeluserInputConditionInput) {
-    createUserInput(input: $input, condition: $condition) {
+const createSimulationReport = gql`
+  mutation CreateSimulationReport(
+    $input: CreateSimulationReportInput!
+    $condition: ModelsimulationReportConditionInput
+  ) {
+    createSimulationReport(input: $input, condition: $condition) {
       id
+      combineWeight
       wheelDiameter
       fuelType
       augerLength
+      timeSpentToPlaneTheField
+      costPerRun
+      percentageOfFieldChosenToCover
+      numOfElectricRuns
       createdAt
       updatedAt
     }
   }
 `;
-exports.handler = async (event, _, callback) => {
-  console.log('event:', event);
-  const requestBody = event.body;
-  console.log('requestBody:', requestBody);
 
-  try {
-    await axios({
-      url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-      method: 'post',
-      headers: {
-        'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-      },
-      data: {
-        query: print(createUserInput),
-        variables: {
-          input: requestBody,
-        },
-      },
-    });
-    const body = { message: 'inserted userInput' };
-    return {
-      statusCode: 200,
-      body: JSON.stringify(body),
-      headers: {
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
-      },
-    };
-  } catch (err) {
-    console.log('err from mutation inside lambda', err);
-  }
+exports.handler = async (event, _, callback) => {
+  const getUserInputs_graphqlData = axios({
+    url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+    method: 'post',
+    headers: {
+      'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+    },
+    data: {
+      query: print(listUserInputs),
+    },
+  });
+
+  const getNumOfElectricRuns_graphqlData = axios({
+    url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+    method: 'post',
+    headers: {
+      'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+    },
+    data: {
+      query: print(getNumOfElectricRuns),
+    },
+  });
+
+  await Promise.all([getUserInputs_graphqlData, getNumOfElectricRuns_graphqlData])
+    .then((res) => {
+      const [listUserInputsData, numOfElectricRunsData] = res;
+
+      const userInputBody = {
+        graphqlData: listUserInputsData.data.data.listUserInputs.items,
+      };
+
+      const numOfElectricRunsBody = {
+        graphqlData: numOfElectricRunsData.data.data.listSimulationReports.items.length,
+      };
+
+      let numOfElectricRuns = numOfElectricRunsBody.graphqlData;
+
+      const reportDataArr = userInputBody.graphqlData.map(async (combine, idx) => {
+        const { wheelDiameter, fuelType, augerLength } = combine;
+        if (fuelType === 'Electric') {
+          numOfElectricRuns += 1;
+        }
+        const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
+          wheelDiameter,
+          augerLength,
+          fuelType,
+          numOfElectricRuns
+        );
+        const reportBody = {
+          wheelDiameter: parseInt(wheelDiameter),
+          augerLength: parseFloat(augerLength),
+          fuelType,
+          combineWeight: totalWeight,
+          timeSpentToPlaneTheField: totalTimeToPlaneField,
+          costPerRun: totalCostPerRun,
+          numOfElectricRuns,
+        };
+
+        console.log('reportBody:', await reportBody);
+
+        const insertReport = await axios({
+          url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+          method: 'post',
+          headers: {
+            'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+          },
+          data: {
+            query: print(createSimulationReport),
+            variables: {
+              input: reportBody,
+            },
+          },
+        });
+      });
+    })
+    .catch((err) => console.log('err from promise all', err));
 
   try {
     const graphqlData = await axios({
@@ -114,25 +147,19 @@ exports.handler = async (event, _, callback) => {
         'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
       },
       data: {
-        query: print(listSimulationReports),
-        // variables: {
-        //   input: {
-        //     name: 'Hello world! frm Andre',
-        //     description: 'my first creation todo from lambda',
-        //   },
-        // },
+        query: print(listUserInputs),
+        // query: print(getNumOfElectricRuns),
       },
     });
+
     const body = {
-      // message: 'successfully created todo!',
-      graphqlData: graphqlData.data.data.listSimulationReports,
+      graphqlData: graphqlData.data.data.listUserInputs.items,
     };
-    console.log(body.graphqlData.items);
-    // callback(null, body.graphqlData.items);
+
     return {
       statusCode: 200,
-      // body: JSON.stringify(body),kin
-      body: JSON.parse(requestBody),
+      body: JSON.parse(body),
+      // body: JSON.stringify(generateReport),
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000',
       },
