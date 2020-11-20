@@ -9,6 +9,7 @@ const Header = () => {
   return (
     <div className='header'>
       <div className='title__header num'>{isTabletOrMobile && <span>Simulation Report</span>}#</div>
+      <div className='title__header timestamp'>Timestamp</div>
       <div className='title__header wheelDia'>Wheel Diameter (in)</div>
       <div className='title__header combineWgt'>Total Combine Weight (lbs)</div>
       <div className='title__header augerLen'>Auger Length (ft)</div>

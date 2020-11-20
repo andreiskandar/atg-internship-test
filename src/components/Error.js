@@ -1,14 +1,12 @@
 import React from 'react';
-import { ob } from '../helpers/obstaclesGenerator';
+// import { obstaclesCoordinate } from '../helpers/obstaclesGenerator';
 
 const Error = ({ message }) => {
-  return (
-    <div>
-      {ob.map((i, idx) => (
+  // const ob = obstaclesCoordinate();
+  // console.log('ob:', ob);
+  return <div>{/* {ob.map((i, idx) => (
         <p key={idx}>{i}</p>
-      ))}
-    </div>
-  );
+      ))} */}</div>;
 };
 
 export default Error;

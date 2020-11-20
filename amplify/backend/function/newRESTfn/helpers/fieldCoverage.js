@@ -1,7 +1,7 @@
 // 10 Acre field has 660' x 660'
-import { TOTAL_FIELD_AREA_sqft as AREA } from './constants';
-
-const side = Math.sqrt(AREA);
+const { TOTAL_FIELD_AREA_sqft } = require('./constants');
+const side = Math.sqrt(TOTAL_FIELD_AREA_sqft);
+const AREA = TOTAL_FIELD_AREA_sqft;
 
 const totalPercentageCoverage = (ob, augerLength) => {
   let hrzPattern = 0,
@@ -102,4 +102,4 @@ const totalPercentageCoverage = (ob, augerLength) => {
     : planeInXCoverage;
 };
 
-export default totalPercentageCoverage;
+module.exports = { totalPercentageCoverage };

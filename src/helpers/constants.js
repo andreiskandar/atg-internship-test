@@ -7,7 +7,7 @@ const NUMBER_OF_PASSES_REQUIRED_TO_PLANE_PER_ACRE = 24; // = 240passes / 10acres
 const FUEL_CONSUMPTION_PER_ACRE = 2; // = 20gallons / 10acres
 const TOTAL_COST_PER_ACRE_dollar = 35; // = $350 / 10acres
 const TOTAL_FIELD_AREA_acre = 10;
-const TOTAL_FIELD_AREA_sqft = 435600;
+const TOTAL_FIELD_AREA_sqft = 435600; // 1 Acre = 43560 sqft
 
 module.exports = {
   WHEEL_DIAMETER_in,

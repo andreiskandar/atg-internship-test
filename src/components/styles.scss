@@ -16,8 +16,15 @@
     padding: 3px;
   }
 
+  .timestamp{
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
+.timestamp{
+  width: 190px;
+}
 .num {
   display: flex;
   justify-content: flex-end;

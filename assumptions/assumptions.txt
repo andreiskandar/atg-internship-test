@@ -1,0 +1,5 @@
+Assumptions
+1)  Combine tractor can only travel either in x or y direction performing S-shape within the field
+2)  Each report will be generated based on the unique combines parameters and randomly-generated obstacles location. Based on the coordinate (x,y)
+    of the obstacles, the combine will make decision to traverse along the x-axis or y-axis.
+3)  

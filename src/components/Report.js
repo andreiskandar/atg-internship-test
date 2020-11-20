@@ -5,6 +5,7 @@ import Header from './Header';
 import roundTo from 'round-to';
 import NumberFormat from 'react-number-format';
 import { WHEEL_DIAMETER_in, AUGER_LENGTH_ft } from '../helpers/constants';
+import moment from 'moment';
 
 const Report = ({ item, index }) => {
   const isTabletOrMobile = useMediaQuery({
@@ -15,6 +16,10 @@ const Report = ({ item, index }) => {
       {isTabletOrMobile && <Header key={index} />}
       <div key={index} className='report_body'>
         <div className='content__report_body num'>{index + 1}</div>
+        <div className='content__report_body timestamp'>
+          {moment(item.createdAt).format('ddd, MMM DD, YY, h:mm:ss a')}
+        </div>
+        {/* <div className='content__report_body timestamp'>{item.createdAt}</div> */}
         <div className='content__report_body wheelDia'>{item.wheelDiameter || WHEEL_DIAMETER_in}</div>
         <div className='content__report_body combineWgt'>
           <NumberFormat value={roundTo(item.combineWeight, 0)} displayType={'text'} thousandSeparator={true} />
@@ -32,7 +37,9 @@ const Report = ({ item, index }) => {
           {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.costPerRun)}
         </div>
         <div className='content__report_body electricRuns'>{item.numOfElectricRuns || 0}</div>
-        <div className='content__report_body fieldCoverage'>{0}</div>
+        <div className='content__report_body fieldCoverage'>
+          {roundTo(item.percentageOfFieldChosenToCover * 100, 2)}
+        </div>
         <div className='content__report_body totalEfficiency'>{0}</div>
 
         {/* <p>fuel type : {item.fuelType} </p>

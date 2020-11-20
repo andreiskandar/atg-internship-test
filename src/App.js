@@ -15,7 +15,6 @@ import {
   createUserInput,
   createUserInput as CreateUserInput,
 } from './graphql/mutations';
-
 import { getResult } from './helpers/calculation';
 import { initialState, reducer } from './hooks/useReducer';
 
@@ -41,7 +40,13 @@ function App() {
   const getSimulationReport = async () => {
     try {
       const reportData = await API.graphql(graphqlOperation(listSimulationReports));
-      dispatch({ type: 'SET_REPORT', report: reportData.data.listSimulationReports.items });
+
+      const sortData = await reportData.data.listSimulationReports.items.sort(
+        (a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt.valueOf())
+      );
+      dispatch({ type: 'SET_REPORT', report: sortData });
+
+      // state.report.sort((a, b) => a.createdAt - b.createdAt)
     } catch (err) {
       console.log('error fetching report...', err);
     }
@@ -88,19 +93,6 @@ function App() {
       costPerRun: totalCostPerRun,
       numOfElectricRuns,
     };
-
-    // const userInput = {
-    //   body: { wheelDiameter, augerLength, fuelType },
-    // };
-    // const postAPI = await API.post(apiName, path, userInput);
-    // await API.post(apiName, path, userInput)
-    //   .then((res) => {
-    //     console.log(res.body);
-    //     console.log(`posted wheelDiameter: ${wheelDiameter}, augerLength: ${augerLength}, fuelType: ${fuelType}`);
-    //   })
-    //   .catch((err) => console.log('err from API.post', err));
-
-    // console.log('postAPI: ', { postAPI });
 
     try {
       await API.graphql(graphqlOperation(CreateSimulationReport, { input: newReport }));
@@ -168,11 +160,4 @@ export default App;
 // }
 // `;
 
-//click button create report
-// Backend
-// lambda function obtain all the parameters
-// use the parameters to create report
-// mutate the table using the id and results
-
-//getSimulationReport
-//
+// create lambda function to run hourly and insert into report table

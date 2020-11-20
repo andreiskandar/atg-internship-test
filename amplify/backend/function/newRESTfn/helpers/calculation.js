@@ -8,7 +8,13 @@ const {
   BASE_COMBINE_WEIGHT_lbs,
 } = require('./constants');
 
-const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelType, numOfElectricRuns) => {
+const getResult = (
+  wheelDiameterFromUserInput,
+  augerLengthFromUserInput,
+  fuelType,
+  numOfElectricRuns,
+  pctFieldChosenToCover
+) => {
   const COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR = 1.08;
   const COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR = 1.05;
   const COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR = 0.995;
@@ -26,14 +32,16 @@ const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelTyp
     TOTAL_COST_PER_ACRE_dollar *
     TOTAL_FIELD_AREA_acre *
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_WHEEL_FACTOR, wheelDiaDiff) *
-    Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff);
+    Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff) *
+    pctFieldChosenToCover;
 
   const electricCost =
     numOfElectricRuns === 1
-      ? dieselCost * COST_USE_ELECTRIC_COMBINE_FACTOR
+      ? dieselCost * COST_USE_ELECTRIC_COMBINE_FACTOR * pctFieldChosenToCover
       : dieselCost *
         COST_USE_ELECTRIC_COMBINE_FACTOR *
-        Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1);
+        Math.pow(COST_REDUCTION_DUE_TO_ELECTRIC_FACTOR, numOfElectricRuns - 1) *
+        pctFieldChosenToCover;
 
   const totalCostPerRun = fuelType === 'Electric' ? electricCost : dieselCost;
 
@@ -43,7 +51,8 @@ const getResult = (wheelDiameterFromUserInput, augerLengthFromUserInput, fuelTyp
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff);
 
   const totalTimeToPlaneField =
-    (totalNumberOfPassesRequiredToPlane * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR) ^ wheelDiaDiff;
+    (totalNumberOfPassesRequiredToPlane * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR) ^
+    (wheelDiaDiff * pctFieldChosenToCover);
 
   return { totalTimeToPlaneField, totalCostPerRun, totalWeight };
 };

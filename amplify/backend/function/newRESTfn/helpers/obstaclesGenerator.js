@@ -1,8 +1,8 @@
-import { TOTAL_FIELD_AREA_sqft as AREA } from './constants';
+const { TOTAL_FIELD_AREA_sqft } = require('./constants');
 
 const rand = () => {
   const min = 0;
-  const max = Math.sqrt(AREA);
+  const max = Math.sqrt(TOTAL_FIELD_AREA_sqft);
   return Math.ceil(Math.floor(Math.random() * max) + min);
 };
 
@@ -19,7 +19,7 @@ const eqArrays = (arr1, arr2) => {
   return true;
 };
 
-export const obstaclesCoordinate = () => {
+const obstaclesCoordinate = () => {
   let ob = [];
   for (let i = 0; i < 3; i++) {
     ob[i] = [rand(), rand()];
@@ -31,3 +31,5 @@ export const obstaclesCoordinate = () => {
 
   return ob;
 };
+
+module.exports = { obstaclesCoordinate };
