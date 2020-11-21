@@ -1,6 +1,0 @@
-{
-  "resource": "/report",
-  "path": "/report",
-  "httpMethod": "POST",
-  "body": "{\"wheelDiameter\":10,\"augerLength\":10,\"fuelType\":\"test\"}"
-}
