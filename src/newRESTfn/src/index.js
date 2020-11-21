@@ -12,9 +12,9 @@ const axios = require('axios');
 const gql = require('graphql-tag');
 const graphql = require('graphql');
 const { print } = graphql;
-const { getResult } = require('../helpers/calculation');
-const { obstaclesCoordinate } = require('../helpers/obstaclesGenerator');
-const { totalPercentageCoverage } = require('../helpers/fieldCoverage');
+const { getResult } = require('./helpers/calculation');
+const { obstaclesCoordinate } = require('./helpers/obstaclesGenerator');
+const { totalPercentageCoverage } = require('./helpers/fieldCoverage');
 
 const listUserInputs = gql`
   query ListUserInputs($filter: ModeluserInputFilterInput, $limit: Int, $nextToken: String) {
@@ -100,54 +100,51 @@ exports.handler = async (event, _, callback) => {
 
       let numOfElectricRuns = numOfElectricRunsBody.graphqlData;
 
-      const reportDataArr = userInputBody.graphqlData
-        .sort((a, b) => new Date(a.createdAt).valueOf() - new Date(b.createdAt.valueOf()))
-        .map(async (combine, idx) => {
-          const { wheelDiameter, fuelType, augerLength } = combine;
+      const reportDataArr = userInputBody.graphqlData.map(async (combine, idx) => {
+        const { wheelDiameter, fuelType, augerLength } = combine;
 
-          // generate obstacles
-          const obstacles = obstaclesCoordinate();
-          const percentageOfFieldChosenToCover = totalPercentageCoverage(obstacles, augerLength);
+        // generate obstacles
+        const obstacles = obstaclesCoordinate();
+        const percentageOfFieldChosenToCover = totalPercentageCoverage(obstacles, augerLength);
 
-          if (fuelType === 'Electric') {
-            numOfElectricRuns += 1;
-          }
-          const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
-            wheelDiameter,
-            augerLength,
-            fuelType,
-            numOfElectricRuns,
-            percentageOfFieldChosenToCover
-          );
+        if (fuelType === 'Electric') {
+          numOfElectricRuns += 1;
+        }
+        const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
+          wheelDiameter,
+          augerLength,
+          fuelType,
+          numOfElectricRuns,
+          percentageOfFieldChosenToCover
+        );
 
-          const reportBody = {
-            wheelDiameter: parseInt(wheelDiameter),
-            augerLength: parseFloat(augerLength),
-            fuelType,
-            combineWeight: totalWeight,
-            timeSpentToPlaneTheField: totalTimeToPlaneField,
-            costPerRun: totalCostPerRun,
-            numOfElectricRuns,
-            percentageOfFieldChosenToCover,
-          };
+        const reportBody = {
+          wheelDiameter: parseInt(wheelDiameter),
+          augerLength: parseFloat(augerLength),
+          fuelType,
+          combineWeight: totalWeight,
+          timeSpentToPlaneTheField: totalTimeToPlaneField,
+          costPerRun: totalCostPerRun,
+          numOfElectricRuns,
+          percentageOfFieldChosenToCover,
+        };
 
-          console.log('reportBody:', await reportBody);
+        console.log('reportBody:', await reportBody);
 
-          const insertReport = await axios({
-            url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-            method: 'post',
-            headers: {
-              'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+        const insertReport = await axios({
+          url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+          method: 'post',
+          headers: {
+            'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+          },
+          data: {
+            query: print(createSimulationReport),
+            variables: {
+              input: reportBody,
             },
-            data: {
-              query: print(createSimulationReport),
-              variables: {
-                input: reportBody,
-              },
-            },
-          });
-          console.log(await `insertReport${idx}`);
+          },
         });
+      });
     })
     .catch((err) => callback(err));
 

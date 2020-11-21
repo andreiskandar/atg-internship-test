@@ -8,31 +8,17 @@
           "defaultAuthentication": {
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 365,
-              "description": "simulationAPI"
+              "apiKeyExpirationDays": 90,
+              "description": ""
             }
           },
           "additionalAuthenticationProviders": []
         }
       }
-    },
-    "newRESTAPI": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "newRESTfn",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ]
     }
   },
   "function": {
-    "lambdafn": {
+    "lambdaFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
@@ -44,33 +30,9 @@
             "GraphQLAPIIdOutput",
             "GraphQLAPIEndpointOutput",
             "GraphQLAPIKeyOutput"
-          ]
-        }
-      ]
-    },
-    "newRESTfn": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "api",
-          "resourceName": "reportAPI",
-          "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput",
-            "GraphQLAPIKeyOutput"
-          ]
-        },
-        {
-          "category": "function",
-          "resourceName": "lambdafn",
-          "attributes": [
-            "Name"
           ]
         }
       ]
     }
-  },
-  "storage": {}
+  }
 }

@@ -12,7 +12,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
 import {
   createSimulationReport as CreateSimulationReport,
-  createUserInput,
   createUserInput as CreateUserInput,
 } from './graphql/mutations';
 import { getResult } from './helpers/calculation';
@@ -28,14 +27,7 @@ function App() {
   useEffect(() => {
     // getSimulationReport();
     getNumOfElectricRuns();
-
-    API.get(apiName, path)
-      .then((res) => console.log(res))
-      .catch((err) => console.log('err from API get', err));
   }, []);
-
-  const apiName = 'newRESTAPI';
-  const path = '/report';
 
   const getSimulationReport = async () => {
     try {
@@ -44,6 +36,7 @@ function App() {
       const sortData = await reportData.data.listSimulationReports.items.sort(
         (a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt.valueOf())
       );
+      console.log(state.report);
       dispatch({ type: 'SET_REPORT', report: sortData });
 
       // state.report.sort((a, b) => a.createdAt - b.createdAt)
@@ -161,3 +154,24 @@ export default App;
 // `;
 
 // create lambda function to run hourly and insert into report table
+
+// type simulationReport
+// @model
+//   {
+//   id: ID!
+//   combineWeight: Float!
+//   wheelDiameter: Int!
+//   fuelType: String!
+//   augerLength: Float!
+//   timeSpentToPlaneTheField: Float
+//   costPerRun: Float
+//   percentageOfFieldChosenToCover: Float
+//   numOfElectricRuns: Int
+// }
+
+// type userInput @model {
+//   id: ID!
+//   wheelDiameter: Int!
+//   fuelType: String!
+//   augerLength: Float!
+// }

@@ -17,5 +17,10 @@
       ]
     }
   },
-  "lambdaLayers": []
+  "lambdaLayers": [
+    {
+      "type": "ExternalLayer",
+      "arn": "arn:aws:lambda:us-east-1:796840959455:layer:axiosLayer:1"
+    }
+  ]
 }
