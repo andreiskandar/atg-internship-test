@@ -5,9 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 
 import Header from './components/Header';
 import Input from './components/Input';
-import FuelTypeInput from './components/FuelTypeInput';
 import Report from './components/Report';
-import Error from './components/Error';
 import { v4 as uuidv4 } from 'uuid';
 import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
 import {
@@ -100,7 +98,8 @@ function App() {
     const userInput = { wheelDiameter, augerLength, fuelType };
     try {
       await API.graphql(graphqlOperation(CreateUserInput, { input: userInput }));
-      dispatch({ type: 'CLEAR_INPUT' });
+      return true;
+      // dispatch({ type: 'CLEAR_INPUT' });
     } catch (err) {
       console.log('err from mutating userInput', err);
     }
@@ -134,10 +133,11 @@ function App() {
         fuelType={state.fuelType}
         wheelDiameter={state.wheelDiameter}
         augerLength={state.augerLength}
+        dispatch={dispatch}
       />
       {/* <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' /> */}
-      {/* <button onClick={getSimulationReport}>Generate Report</button> */}
+      <button onClick={getSimulationReport}>Generate Report</button>
       {/* <button onClick={handleUserInput}>Enter</button> */}
 
       <br />

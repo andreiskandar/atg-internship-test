@@ -23,11 +23,12 @@
   p{
     margin-bottom: 4px;
   }
+
   .error{
     color:#9f3a38;
   }
+
   .fuelType.radio{
-    
     display: flex;
     justify-content: start;
     flex-direction: column;
@@ -37,7 +38,6 @@
       label{
         margin: 0 5px 0 0;
         padding: 0 5px 0 0;
-       
         span{
           padding: 0 5px;
         }
@@ -83,7 +83,7 @@
 .num {
   display: flex;
   justify-content: flex-end;
-  width: 14px;
+  width: 30px;
 
 }
 

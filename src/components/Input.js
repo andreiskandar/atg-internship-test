@@ -3,21 +3,24 @@ import FuelTypeInput from './FuelTypeInput';
 import { Card, Form, Button, Select, Message } from 'semantic-ui-react';
 import './styles.scss';
 
-const Input = ({ onChange, radioChecked, augerLength, wheelDiameter, handleUserInput, fuelType }) => {
+const Input = ({ dispatch, onChange, radioChecked, augerLength, wheelDiameter, handleUserInput, fuelType }) => {
+  const minAugerLength = 8.7;
+  const maxAugerLength = 25.7;
   const [state, setState] = useState({
     wheelError: false,
     augerLenError: false,
     fuelTypeError: false,
     success: false,
   });
-  useEffect(() => {}, [state.success]);
+  useEffect(() => {}, [state]);
 
   const wheelDiameterArr = [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70];
   const wheelDiameterOptions = wheelDiameterArr.map((dia, idx) => ({ key: idx, text: `${dia} in`, value: dia }));
+
   const augerLengthArray = () => {
     const arr = [];
-    for (let i = 8; i < 26; i++) {
-      arr.push(i + 0.7);
+    for (let i = minAugerLength; i <= maxAugerLength; i++) {
+      arr.push(i);
     }
     return arr;
   };
@@ -25,21 +28,26 @@ const Input = ({ onChange, radioChecked, augerLength, wheelDiameter, handleUserI
 
   const validate = () => {
     if (!wheelDiameter) {
-      setState((prev) => ({ ...prev, wheelError: true }));
+      setState({ ...state, wheelError: true });
     }
     if (!augerLength) {
-      setState((prev) => ({ ...prev, augerLenError: true }));
+      setState({ ...state, augerLenError: true });
     }
     if (!fuelType) {
-      setState((prev) => ({ ...prev, fuelTypeError: true }));
+      setState({ ...state, fuelTypeError: true });
     }
     if (wheelDiameter && augerLength && fuelType) {
-      handleUserInput();
-      setState({ ...state, success: true });
-      setTimeout(() => {
-        setState({ ...state, wheelError: false, augerLenError: false, fuelType: false, success: false });
-      }, 3000);
+      const success = handleUserInput();
+      if (success) {
+        setState({ ...state, success: true });
+      }
     }
+
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR_INPUT' });
+
+      setState({ ...state, wheelError: false, augerLenError: false, fuelType: false, success: false });
+    }, 3000);
   };
 
   return (
@@ -87,27 +95,6 @@ const Input = ({ onChange, radioChecked, augerLength, wheelDiameter, handleUserI
         </div>
       </Form>
     </Card>
-
-    // <div>
-    //   <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
-    //   <input
-    //     name='augerLength'
-    //     onChange={onChange}
-    //     value={state.augerLength}
-    //     placeholder='augerLength in ft max:25.7'
-    //   />
-    //   <label>
-    //     Diesel
-    //     <input type='radio' checked='checked' name='fuelType' value='Diesel' onChange={onChange}></input>
-    //     <span className='checkmark'></span>
-    //   </label>
-    //   <label>
-    //     Electric
-    //     <span className='checkmark'></span>
-    //     <input type='radio' name='fuelType' value='Electric' onChange={onChange}></input>
-    //   </label>
-    //   <button onClick={createSimulationReport}>Create Report</button>
-    // </div>
   );
 };
 
