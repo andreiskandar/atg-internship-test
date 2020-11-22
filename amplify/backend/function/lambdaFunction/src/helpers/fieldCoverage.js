@@ -7,14 +7,23 @@ const totalPercentageCoverage = (ob, augerLength) => {
   let hrzPattern = 0,
     vrtPattern = 0,
     planeInYCoverage = 0,
-    planeInXCoverage = 0;
+    planeInXCoverage = 0,
+    substractInX = 1;
 
-  const [a0, a1] = ob[0];
-  const [b0, b1] = ob[1];
-  const [c0, c1] = ob[2];
+  const [[a0, a1], [b0, b1], [c0, c1]] = ob;
+
+  const diff_X_leftEdge_a = Math.abs(a0 - 0);
+  const diff_X_leftEdge_b = Math.abs(b0 - 0);
+  const diff_X_leftEdge_c = Math.abs(c0 - 0);
+
+  const diff_X_a_rightEdge = Math.abs(side - (side - a0));
+  const diff_X_b_rightEdge = Math.abs(side - (side - b0));
+  const diff_X_c_rightEdge = Math.abs(side - (side - c0));
+
   const diff_X_a_b = Math.abs(a0 - b0);
-  const diff_X_a_c = Math.abs(a0 - c0);
   const diff_X_b_c = Math.abs(b0 - c0);
+  const diff_X_a_c = Math.abs(a0 - c0);
+
   const max_X_a_b_c = Math.max(a0, b0, c0);
   const min_X_a_b_c = Math.min(a0, b0, c0);
   const diff_min_max_x = max_X_a_b_c - min_X_a_b_c;
@@ -27,14 +36,29 @@ const totalPercentageCoverage = (ob, augerLength) => {
   const diff_min_max_y = max_Y_a_b_c - min_Y_a_b_c;
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  if (diff_X_leftEdge_a < augerLength) {
+    hrzPattern++;
+    substractInX -= (diff_X_leftEdge_a * side) / AREA;
+  }
+  if (diff_X_leftEdge_b < augerLength) {
+    hrzPattern++;
+    substractInX -= (diff_X_leftEdge_b * side) / AREA;
+  }
+  if (diff_X_leftEdge_c < augerLength) {
+    hrzPattern++;
+    substractInX -= (diff_X_leftEdge_c * side) / AREA;
+  }
   if (diff_X_a_b < augerLength) {
     hrzPattern++;
+    substractInX -= (diff_X_a_b * side) / AREA;
   }
   if (diff_X_a_c < augerLength) {
     hrzPattern++;
+    substractInX -= (diff_X_a_c * side) / AREA;
   }
   if (diff_X_b_c < augerLength) {
     hrzPattern++;
+    substractInX -= (diff_X_a_c * side) / AREA;
   }
 
   // obstacles in a group

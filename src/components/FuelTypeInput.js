@@ -1,20 +1,24 @@
 import React from 'react';
 import './styles.scss';
 
-const FuelTypeInput = ({ onChange, radioChecked }) => {
+const FuelTypeInput = ({ onChange, radioChecked, error }) => {
+  const fuelTypeClass = error ? 'fuelType radio error' : 'fuelType radio';
   return (
-    <form>
-      <label>
-        <input type='radio' name='fuelType' value='Diesel' checked={radioChecked} onChange={onChange}></input>
-        Diesel
-        <span className='checkmark'></span>
-      </label>
-      <label>
-        <input type='radio' name='fuelType' value='Electric' checked={radioChecked} onChange={onChange}></input>
-        Electric
-        <span className='checkmark'></span>
-      </label>
-    </form>
+    <div className={fuelTypeClass}>
+      <p>
+        <strong>Fuel Type</strong>
+      </p>
+      <div>
+        <label>
+          <input type='radio' name='fuelType' value='Diesel' checked={radioChecked} onChange={onChange}></input>
+          <span className='checkmark'>Diesel</span>
+        </label>
+        <label>
+          <input type='radio' name='fuelType' value='Electric' checked={radioChecked} onChange={onChange}></input>
+          <span className='checkmark'>Electric</span>
+        </label>
+      </div>
+    </div>
   );
 };
 

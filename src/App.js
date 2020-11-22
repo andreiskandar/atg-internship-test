@@ -4,7 +4,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { useMediaQuery } from 'react-responsive';
 
 import Header from './components/Header';
-// import Input from './components/Input';
+import Input from './components/Input';
 import FuelTypeInput from './components/FuelTypeInput';
 import Report from './components/Report';
 import Error from './components/Error';
@@ -16,6 +16,7 @@ import {
 } from './graphql/mutations';
 import { getResult } from './helpers/calculation';
 import { initialState, reducer } from './hooks/useReducer';
+import { Container } from 'semantic-ui-react';
 
 function App() {
   const isTabletOrMobile = useMediaQuery({
@@ -33,13 +34,10 @@ function App() {
     try {
       const reportData = await API.graphql(graphqlOperation(listSimulationReports));
 
-      const sortData = await reportData.data.listSimulationReports.items.sort(
+      const sortDataByTimestamp = reportData.data.listSimulationReports.items.sort(
         (a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt.valueOf())
       );
-      console.log(state.report);
-      dispatch({ type: 'SET_REPORT', report: sortData });
-
-      // state.report.sort((a, b) => a.createdAt - b.createdAt)
+      dispatch({ type: 'SET_REPORT', report: sortDataByTimestamp });
     } catch (err) {
       console.log('error fetching report...', err);
     }
@@ -108,12 +106,16 @@ function App() {
     }
   };
 
-  function onChange(e) {
+  function onChange(e, data) {
     if (e.target.name === 'fuelType') {
       dispatch({ type: 'SET_RADIO_BTN' });
     }
 
-    dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
+    if (data) {
+      dispatch({ type: 'SET_INPUT', key: data.name, value: data.value });
+    } else {
+      dispatch({ type: 'SET_INPUT', key: e.target.name, value: e.target.value });
+    }
   }
 
   const renderReport = state.report.map((item, index) => (
@@ -124,20 +126,25 @@ function App() {
   ));
 
   return (
-    <div className='App'>
-      <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
-      <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' />
-      <FuelTypeInput onChange={onChange} radioChecked={state.radioChecked} />
-      <button onClick={getSimulationReport}>Generate Report</button>
-      <button onClick={handleUserInput}>Enter</button>
+    <Container className='App'>
+      <Input
+        handleUserInput={handleUserInput}
+        radioChecked={state.radioChecked}
+        onChange={onChange}
+        fuelType={state.fuelType}
+        wheelDiameter={state.wheelDiameter}
+        augerLength={state.augerLength}
+      />
+      {/* <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
+      <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' /> */}
+      {/* <button onClick={getSimulationReport}>Generate Report</button> */}
+      {/* <button onClick={handleUserInput}>Enter</button> */}
 
-      <br />
-      <br />
       <br />
       {!isTabletOrMobile && <Header />}
 
       {renderReport}
-    </div>
+    </Container>
   );
 }
 

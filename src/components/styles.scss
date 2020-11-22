@@ -1,5 +1,60 @@
+.App.ui.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.ui.card{
+  padding: 10px;
+  h3{
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+    border-bottom: 1px solid #bfbfbf;
+  }
+  .ui.form{
+    margin: 10px;
+    .ui.dropdown{
+      width: 270px;
+    }
+  }
+  p{
+    margin-bottom: 4px;
+  }
+  .error{
+    color:#9f3a38;
+  }
+  .fuelType.radio{
+    
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    width: 270px;
+    margin-bottom: 14px;
+    div{
+      label{
+        margin: 0 5px 0 0;
+        padding: 0 5px 0 0;
+       
+        span{
+          padding: 0 5px;
+        }
+      }
+    }
+  }
+}
+
+.ui.button.submit{
+  width: 270px;
+  
+}
+
+
 .header {
   display: flex;
+  
   .title__header {
     font-size: smaller;
     border: solid thin black;
