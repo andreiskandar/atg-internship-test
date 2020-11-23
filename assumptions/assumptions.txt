@@ -1,5 +1,6 @@
 Assumptions
-1)  Combine tractor can only travel either in x or y direction performing S-shape within the field. 
+1)  Combine tractor can only travel either in x or y direction. Combine tractor can turn 90 degree,
 2)  Each report will be generated based on the unique combines parameters and randomly-generated obstacles location. 
 3)  Based on the coordinate (x,y) of the obstacles, the combine will make decision to traverse along the x-axis or y-axis.
-4)  Combine tractor can turn 90 degree, can start from any corner
+4)  Maximum wheel diameter = 70in
+

@@ -14,7 +14,8 @@ import {
 } from './graphql/mutations';
 import { getResult } from './helpers/calculation';
 import { initialState, reducer } from './hooks/useReducer';
-import { Container } from 'semantic-ui-react';
+import { Container, Button } from 'semantic-ui-react';
+import { obstaclesCoordinate } from './helpers/obstaclesGenerator';
 
 function App() {
   const isTabletOrMobile = useMediaQuery({
@@ -25,6 +26,7 @@ function App() {
 
   useEffect(() => {
     // getSimulationReport();
+    console.log(obstaclesCoordinate());
     getNumOfElectricRuns();
   }, []);
 
@@ -102,6 +104,7 @@ function App() {
       // dispatch({ type: 'CLEAR_INPUT' });
     } catch (err) {
       console.log('err from mutating userInput', err);
+      return false;
     }
   };
 
@@ -137,12 +140,13 @@ function App() {
       />
       {/* <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' /> */}
-      <button onClick={getSimulationReport}>Generate Report</button>
+      <Button primary onClick={getSimulationReport}>
+        Generate Report
+      </Button>
       {/* <button onClick={handleUserInput}>Enter</button> */}
 
       <br />
       {!isTabletOrMobile && <Header />}
-
       {renderReport}
     </Container>
   );

@@ -11,7 +11,9 @@ const Input = ({ dispatch, onChange, radioChecked, augerLength, wheelDiameter, h
     augerLenError: false,
     fuelTypeError: false,
     success: false,
+    error: false,
   });
+
   useEffect(() => {}, [state]);
 
   const wheelDiameterArr = [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70];
@@ -28,73 +30,84 @@ const Input = ({ dispatch, onChange, radioChecked, augerLength, wheelDiameter, h
 
   const validate = () => {
     if (!wheelDiameter) {
-      setState({ ...state, wheelError: true });
+      setState((prev) => ({ ...prev, wheelError: true }));
     }
     if (!augerLength) {
-      setState({ ...state, augerLenError: true });
+      setState((prev) => ({ ...prev, augerLenError: true }));
     }
     if (!fuelType) {
-      setState({ ...state, fuelTypeError: true });
+      setState((prev) => ({ ...prev, fuelTypeError: true }));
     }
     if (wheelDiameter && augerLength && fuelType) {
-      const success = handleUserInput();
-      if (success) {
-        setState({ ...state, success: true });
-      }
+      handleUserInput().then((success) => {
+        if (success) {
+          setState({ ...state, success: true });
+        } else {
+          setState({ ...state, error: true });
+        }
+      });
     }
 
     setTimeout(() => {
       dispatch({ type: 'CLEAR_INPUT' });
 
-      setState({ ...state, wheelError: false, augerLenError: false, fuelType: false, success: false });
+      setState({ ...state, wheelError: false, augerLenError: false, fuelType: false, success: false, error: false });
     }, 3000);
   };
 
   return (
-    <Card>
-      <h3>Combine Configuration</h3>
-      <Form success={state.success}>
-        <Form.Field
-          width={8}
-          name='wheelDiameter'
-          onChange={onChange}
-          control={Select}
-          options={wheelDiameterOptions}
-          value={wheelDiameter}
-          label='Wheel Diameter'
-          placeholder='Wheel Diameter'
-          search
-          searchInput={{ id: 'form-select-control-wheelDiameter' }}
-          error={state.wheelError}
-        />
-        <Form.Field
-          width={8}
-          name='augerLength'
-          control={Select}
-          onChange={onChange}
-          options={augerLengthOptions}
-          value={augerLength}
-          label='Auger Length'
-          placeholder='Auger Length'
-          search
-          searchInput={{ id: 'form-select-control-augerLength' }}
-          error={state.augerLenError}
-        />
+    <>
+      <Card>
+        <h3>Combine Configuration</h3>
+        <Form success={state.success} error={state.error}>
+          <Form.Field
+            width={8}
+            name='wheelDiameter'
+            onChange={onChange}
+            control={Select}
+            options={wheelDiameterOptions}
+            value={wheelDiameter}
+            label='Wheel Diameter'
+            placeholder='Wheel Diameter'
+            search
+            searchInput={{ id: 'form-select-control-wheelDiameter' }}
+            error={
+              state.wheelError && {
+                content: 'Please enter wheel diameter',
+                pointing: 'above',
+              }
+            }
+          />
+          <Form.Field
+            width={8}
+            name='augerLength'
+            control={Select}
+            onChange={onChange}
+            options={augerLengthOptions}
+            value={augerLength}
+            label='Auger Length'
+            placeholder='Auger Length'
+            search
+            searchInput={{ id: 'form-select-control-augerLength' }}
+            error={state.augerLenError && { content: 'Please enter auger length', pointing: 'above' }}
+          />
 
-        <FuelTypeInput onChange={onChange} radioChecked={radioChecked} error={state.fuelTypeError} />
-        <Message success header='Combine Submitted' />
-        <div>
-          <Button
-            primary
-            className='submit'
-            // onClick={handleUserInput}
-            onClick={validate}
-          >
-            Submit
-          </Button>
-        </div>
-      </Form>
-    </Card>
+          <FuelTypeInput onChange={onChange} radioChecked={radioChecked} error={state.fuelTypeError} />
+          <Message success header='Combine Submitted' />
+          <Message error header='Something went wrong' />
+          <div>
+            <Button
+              primary
+              className='submit'
+              // onClick={handleUserInput}
+              onClick={validate}
+            >
+              Submit
+            </Button>
+          </div>
+        </Form>
+      </Card>
+    </>
   );
 };
 

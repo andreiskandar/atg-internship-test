@@ -13,7 +13,7 @@ const Report = ({ item, index }) => {
   });
   return (
     <div className='isTabletOrMobile'>
-      {isTabletOrMobile && <Header key={index} />}
+      {isTabletOrMobile && <Header key={index + Math.random()} />}
       <div key={index} className='report_body'>
         <div className='content__report_body num'>{index + 1}</div>
         <div className='content__report_body timestamp'>

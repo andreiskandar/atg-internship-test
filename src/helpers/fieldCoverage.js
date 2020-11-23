@@ -1,32 +1,72 @@
 // 10 Acre field has 660' x 660'
-import { TOTAL_FIELD_AREA_sqft as AREA } from './constants';
-
-const side = Math.sqrt(AREA);
+const { TOTAL_FIELD_AREA_sqft } = require('./constants');
+const side = Math.sqrt(TOTAL_FIELD_AREA_sqft);
+const AREA = TOTAL_FIELD_AREA_sqft;
 
 const totalPercentageCoverage = (ob, augerLength) => {
   let hrzPattern = 0,
     vrtPattern = 0,
     planeInYCoverage = 0,
-    planeInXCoverage = 0;
+    planeInXCoverage = 0,
+    substractInX = 1;
 
-  const [a0, a1] = ob[0];
-  const [b0, b1] = ob[1];
-  const [c0, c1] = ob[2];
+  const [[a0, a1], [b0, b1], [c0, c1]] = ob;
+
+  // calculate at what turn x / augerLength
+  // if Math.floor(x)
+
+  const diffInXFromLeftEdgeToA = Math.abs(0 - a0);
+  const diffInXFromLeftEdgeToB = Math.abs(0 - b0);
+  const diffInXFromLeftEdgeToC = Math.abs(0 - c0);
+
+  const diffInXFromRightEdgeToA = Math.abs(0 - a0);
+  const diffInXFromRightEdgeToB = Math.abs(0 - b0);
+  const diffInXFromRightEdgeToC = Math.abs(0 - c0);
+
+  const diffInYFromEdgeToA = Math.abs(0 - a1);
+  const diffInYFromEdgeToB = Math.abs(0 - b1);
+  const diffInYFromEdgeToC = Math.abs(0 - c1);
+
   const diff_X_a_b = Math.abs(a0 - b0);
-  const diff_X_a_c = Math.abs(a0 - c0);
   const diff_X_b_c = Math.abs(b0 - c0);
-  const max_X_a_b_c = Math.max(a0, b0, c0);
-  const min_X_a_b_c = Math.min(a0, b0, c0);
-  const diff_min_max_x = max_X_a_b_c - min_X_a_b_c;
+  const diff_X_a_c = Math.abs(a0 - c0);
 
   const diff_Y_a_b = Math.abs(a1 - b1);
   const diff_Y_a_c = Math.abs(a1 - c1);
   const diff_Y_b_c = Math.abs(b1 - c1);
+
+  const max_X_a_b_c = Math.max(a0, b0, c0);
+  const min_X_a_b_c = Math.min(a0, b0, c0);
+  const diff_min_max_x = max_X_a_b_c - min_X_a_b_c;
+
   const max_Y_a_b_c = Math.max(a1, b1, c1);
   const min_Y_a_b_c = Math.min(a1, b1, c1);
   const diff_min_max_y = max_Y_a_b_c - min_Y_a_b_c;
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  if (diffInXFromEdgeToA < augerLength) {
+    hrzPattern++;
+  }
+  if (diffInXFromEdgeToB < augerLength) {
+    hrzPattern++;
+  }
+  if (diffInXFromEdgeToC < augerLength) {
+    hrzPattern++;
+  }
+  // above algo might need to be reviewed
+
+  // if all obstacles are in one group and close to edge
+  if (
+    diff_X_a_b < augerLength &&
+    diff_X_a_c < augerLength &&
+    diff_X_b_c < augerLength &&
+    diffInXFromEdgeToA < augerLength &&
+    diffInXFromEdgeToB < augerLength &&
+    diffInXFromEdgeToC < augerLength
+  ) {
+    planeInYCoverage = 1 - (augerLength * side) / AREA;
+  }
+
   if (diff_X_a_b < augerLength) {
     hrzPattern++;
   }
@@ -102,4 +142,4 @@ const totalPercentageCoverage = (ob, augerLength) => {
     : planeInXCoverage;
 };
 
-export default totalPercentageCoverage;
+module.exports = { totalPercentageCoverage };

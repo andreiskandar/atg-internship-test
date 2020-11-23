@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.scss';
 
 const FuelTypeInput = ({ onChange, radioChecked, error }) => {
-  const fuelTypeClass = error ? 'fuelType radio error' : 'fuelType radio';
+  const fuelTypeClass = error ? 'fuelType radio error-radio' : 'fuelType radio';
   return (
     <div className={fuelTypeClass}>
       <p>

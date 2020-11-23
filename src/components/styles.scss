@@ -24,13 +24,17 @@
     margin-bottom: 4px;
   }
 
-  .error{
+  .error-radio{
     color:#9f3a38;
+  }
+
+  .ui.pointing.above.prompt.label{
+    width: 270px;
   }
 
   .fuelType.radio{
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     flex-direction: column;
     width: 270px;
     margin-bottom: 14px;
@@ -177,7 +181,7 @@ only screen and (max-width: 1224px) {
     }
 
     .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns, .fieldCoverage, .totalEfficiency {
-      width: 100px;
+      width: 190px;
     }
 
   }
