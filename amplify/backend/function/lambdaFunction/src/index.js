@@ -56,6 +56,7 @@ const createSimulationReport = gql`
       costPerRun
       percentageOfFieldChosenToCover
       numOfElectricRuns
+      totalEfficiency
       createdAt
       updatedAt
     }
@@ -136,27 +137,27 @@ exports.handler = async (event, _, callback) => {
           costPerRun: totalCostPerRun,
           numOfElectricRuns,
           percentageOfFieldChosenToCover,
-          // totalEfficiency,
+          totalEfficiency,
         };
+        console.log('reportBody: bfore mutation', await reportBody);
 
-        console.log('reportBody:', await reportBody);
-
-        // const insertBody = await queryGraphqlData(createSimulationReport, reportBody);
+        const insertBody = await queryGraphqlData(createSimulationReport, reportBody);
         // console.log('insertBody:', insertBody)
 
-        const insertBody = await axios({
-          url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-          method: 'post',
-          headers: {
-            'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-          },
-          data: {
-            query: print(createSimulationReport),
-            variables: {
-              input: reportBody,
-            },
-          },
-        });
+        // const insertBody = await axios({
+        //   url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+        //   method: 'post',
+        //   headers: {
+        //     'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+        //   },
+        //   data: {
+        //     query: print(createSimulationReport),
+        //     variables: {
+        //       input: reportBody,
+        //     },
+        //   },
+        // });
+        // console.log('reportBody:', await reportBody);
       });
     })
     .catch((err) => callback('error with promise all', err));
