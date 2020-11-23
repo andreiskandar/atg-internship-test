@@ -13,6 +13,7 @@ const { print } = graphql;
 const { getResult } = require('./helpers/calculation');
 const { obstaclesCoordinate } = require('./helpers/obstaclesGenerator');
 const { totalPercentageCoverage } = require('./helpers/fieldCoverage');
+const { queryGraphqlData } = require('./helpers/graphqlData');
 
 const listUserInputs = gql`
   query ListUserInputs($filter: ModeluserInputFilterInput, $limit: Int, $nextToken: String) {
@@ -60,29 +61,24 @@ const createSimulationReport = gql`
     }
   }
 `;
+const listPreviousCombineQuery = gql`
+  query previousCombineInfo {
+    listSimulationReports(
+      filter: { augerLength: { eq: 22.7 }, fuelType: { eq: "Electric" }, wheelDiameter: { eq: 68 } }
+    ) {
+      items {
+        costPerRun
+        timeSpentToPlaneTheField
+        percentageOfFieldChosenToCover
+      }
+    }
+  }
+`;
 
 exports.handler = async (event, _, callback) => {
-  const getUserInputs_graphqlData = axios({
-    url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-    method: 'post',
-    headers: {
-      'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-    },
-    data: {
-      query: print(listUserInputs),
-    },
-  });
+  const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
 
-  const getNumOfElectricRuns_graphqlData = axios({
-    url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-    method: 'post',
-    headers: {
-      'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-    },
-    data: {
-      query: print(getNumOfElectricRuns),
-    },
-  });
+  const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns);
 
   await Promise.all([getUserInputs_graphqlData, getNumOfElectricRuns_graphqlData])
     .then((res) => {
@@ -100,10 +96,29 @@ exports.handler = async (event, _, callback) => {
 
       const reportDataArr = userInputBody.graphqlData.map(async (combine, idx) => {
         const { wheelDiameter, fuelType, augerLength } = combine;
-
         // generate obstacles
         const obstacles = obstaclesCoordinate();
         const percentageOfFieldChosenToCover = totalPercentageCoverage(obstacles, augerLength);
+
+        //query for test efficiency for specific combine
+        const listPreviousCombineQuery = gql`
+          query previousCombineInfo {
+            listSimulationReports(
+              filter: { 
+                augerLength: { eq: ${augerLength} }, fuelType: { eq: "${fuelType}" }, wheelDiameter: { eq: ${wheelDiameter} } }
+            ) {
+              items {
+                costPerRun
+                timeSpentToPlaneTheField
+                percentageOfFieldChosenToCover
+              }
+            }
+          }
+        `;
+
+        const listPreviousCombine_graphqlData = await queryGraphqlData(listPreviousCombineQuery).then((res) => {
+          return res.data.data.listSimulationReports.items;
+        });
 
         if (fuelType === 'Electric') {
           numOfElectricRuns += 1;
@@ -129,19 +144,7 @@ exports.handler = async (event, _, callback) => {
 
         console.log('reportBody:', await reportBody);
 
-        const insertReport = await axios({
-          url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-          method: 'post',
-          headers: {
-            'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-          },
-          data: {
-            query: print(createSimulationReport),
-            variables: {
-              input: reportBody,
-            },
-          },
-        });
+        const insertReport = await queryGraphqlData(createSimulationReport, reportBody);
       });
     })
     .catch((err) => callback(err));
@@ -154,13 +157,13 @@ exports.handler = async (event, _, callback) => {
         'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
       },
       data: {
-        query: print(listUserInputs),
+        query: print(listPreviousCombineQuery),
         // query: print(getNumOfElectricRuns),
       },
     });
 
     const body = {
-      graphqlData: graphqlData.data.data.listUserInputs.items,
+      graphqlData: graphqlData.data.data.listSimulationReports.items,
     };
 
     return {

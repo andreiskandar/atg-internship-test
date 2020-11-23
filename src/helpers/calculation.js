@@ -54,13 +54,6 @@ const getResult = (
   return { totalTimeToPlaneField, totalCostPerRun, totalWeight };
 };
 
-module.exports = { getResult };
+const getTotalEfficiency = (hourlyReportArray) => {};
 
-// A Base Combine weighs 53,000 pounds, with 60-inch wheels, and 8.7 feet wide auger,
-// making 240 passes to plane a 10-acre square field with each pass taking 5 min. The base
-// fuel type is Diesel with a fuel consumption per 10 acres of 20 gallons. Costing $350 per
-// 10 acres.
-
-// Electric Combines are more costly per 10 acres by 25% at the start but with each run
-// reducing cost by 0.5 % consistently. Diesel is a fixed cost. Regardless of fuel type the
-// cost per 10 acres is a factor of weight with a linear relationship.
+module.exports = { getResult, getTotalEfficiency };

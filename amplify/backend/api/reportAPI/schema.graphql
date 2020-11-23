@@ -8,6 +8,7 @@ type simulationReport @model {
   costPerRun: Float
   percentageOfFieldChosenToCover: Float
   numOfElectricRuns: Int
+  totalEfficiency: Float
 }
 
 type userInput @model {

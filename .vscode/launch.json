@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "type": "aws-sam",
+      "request": "direct-invoke",
+      "name": "Coding:amplify/backend/function/lambdafunction/src/index.handler (nodejs12.x)",
+      "invokeTarget": {
+        "target": "code",
+        "projectRoot": "",
+        "lambdaHandler": "amplify/backend/function/lambdafunction/src/index.handler"
+      },
+      "lambda": {
+        "runtime": "nodejs12.x",
+        "payload": {},
+        "environmentVariables": {}
+      }
+    }
+  ]
+}
