@@ -57,7 +57,16 @@ const getResult = (
   return { totalTimeToPlaneField, totalCostPerRun, totalWeight };
 };
 
-module.exports = { getResult };
+const getTotalEfficiency = (previousCombineInfoArray) => {
+  return (
+    previousCombineInfoArray.reduce((acc, cur) => {
+      acc += 600 / cur.timeSpentToPlaneTheField + cur.percentageOfFieldChosenToCover + cur.costPerRun / 350;
+      return acc;
+    }, 0) / previousCombineInfoArray.length
+  );
+};
+
+module.exports = { getResult, getTotalEfficiency };
 
 // A Base Combine weighs 53,000 pounds, with 60-inch wheels, and 8.7 feet wide auger,
 // making 240 passes to plane a 10-acre square field with each pass taking 5 min. The base

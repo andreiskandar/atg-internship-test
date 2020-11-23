@@ -18,7 +18,7 @@ const Header = () => {
       <div className='title__header totalCost'>Cost/Run 10 Acre</div>
       <div className='title__header electricRuns'># Electric Runs</div>
       <div className='title__header fieldCoverage'>Field Chosen Coverage (%)</div>
-      <div className='title__header totalEfficiency'>Total Efficiency (%)</div>
+      <div className='title__header totalEfficiency'>Total Efficiency</div>
     </div>
   );
 };

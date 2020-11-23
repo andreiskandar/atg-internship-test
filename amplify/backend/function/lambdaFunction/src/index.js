@@ -10,7 +10,7 @@ const axios = require('axios');
 const gql = require('graphql-tag');
 const graphql = require('graphql');
 const { print } = graphql;
-const { getResult } = require('./helpers/calculation');
+const { getResult, getTotalEfficiency } = require('./helpers/calculation');
 const { obstaclesCoordinate } = require('./helpers/obstaclesGenerator');
 const { totalPercentageCoverage } = require('./helpers/fieldCoverage');
 const { queryGraphqlData } = require('./helpers/graphqlData');
@@ -61,19 +61,6 @@ const createSimulationReport = gql`
     }
   }
 `;
-const listPreviousCombineQuery = gql`
-  query previousCombineInfo {
-    listSimulationReports(
-      filter: { augerLength: { eq: 22.7 }, fuelType: { eq: "Electric" }, wheelDiameter: { eq: 68 } }
-    ) {
-      items {
-        costPerRun
-        timeSpentToPlaneTheField
-        percentageOfFieldChosenToCover
-      }
-    }
-  }
-`;
 
 exports.handler = async (event, _, callback) => {
   const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
@@ -116,7 +103,7 @@ exports.handler = async (event, _, callback) => {
           }
         `;
 
-        const listPreviousCombine_graphqlData = await queryGraphqlData(listPreviousCombineQuery).then((res) => {
+        const listPreviousCombine = await queryGraphqlData(listPreviousCombineQuery).then((res) => {
           return res.data.data.listSimulationReports.items;
         });
 
@@ -131,6 +118,15 @@ exports.handler = async (event, _, callback) => {
           percentageOfFieldChosenToCover
         );
 
+        const newData = {
+          costPerRun: totalCostPerRun,
+          timeSpentToPlaneTheField: totalTimeToPlaneField,
+          percentageOfFieldChosenToCover,
+        };
+
+        listPreviousCombine.push(newData);
+        const totalEfficiency = getTotalEfficiency(listPreviousCombine);
+
         const reportBody = {
           wheelDiameter: parseInt(wheelDiameter),
           augerLength: parseFloat(augerLength),
@@ -140,14 +136,30 @@ exports.handler = async (event, _, callback) => {
           costPerRun: totalCostPerRun,
           numOfElectricRuns,
           percentageOfFieldChosenToCover,
+          // totalEfficiency,
         };
 
         console.log('reportBody:', await reportBody);
 
-        const insertReport = await queryGraphqlData(createSimulationReport, reportBody);
+        // const insertBody = await queryGraphqlData(createSimulationReport, reportBody);
+        // console.log('insertBody:', insertBody)
+
+        const insertBody = await axios({
+          url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
+          method: 'post',
+          headers: {
+            'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
+          },
+          data: {
+            query: print(createSimulationReport),
+            variables: {
+              input: reportBody,
+            },
+          },
+        });
       });
     })
-    .catch((err) => callback(err));
+    .catch((err) => callback('error with promise all', err));
 
   try {
     const graphqlData = await axios({
@@ -157,13 +169,13 @@ exports.handler = async (event, _, callback) => {
         'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
       },
       data: {
-        query: print(listPreviousCombineQuery),
+        query: print(listUserInputs),
         // query: print(getNumOfElectricRuns),
       },
     });
 
     const body = {
-      graphqlData: graphqlData.data.data.listSimulationReports.items,
+      graphqlData: graphqlData.data.data.listUserInputs.items,
     };
 
     return {

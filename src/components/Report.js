@@ -40,7 +40,7 @@ const Report = ({ item, index }) => {
         <div className='content__report_body fieldCoverage'>
           {roundTo(item.percentageOfFieldChosenToCover * 100, 2)}
         </div>
-        <div className='content__report_body totalEfficiency'>{0}</div>
+        <div className='content__report_body totalEfficiency'>{roundTo(item.totalEfficiency || 0, 3)}</div>
 
         {/* <p>fuel type : {item.fuelType} </p>
       <p>total time to plane the field: {roundTo(item.timeSpentToPlaneTheField, 0)} min</p>

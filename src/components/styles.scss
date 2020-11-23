@@ -84,70 +84,53 @@
 .timestamp{
   width: 190px;
 }
-.num {
+
+.num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns, .fieldCoverage, .totalEfficiency  {
   display: flex;
   justify-content: flex-end;
-  width: 30px;
+}
 
+.num {
+  width: 30px;
 }
 
 .wheelDia {
-  display: flex;
-  justify-content: flex-end;
   width: 85px;
 }
 
 .combineWgt {
-  display: flex;
-  justify-content: flex-end;
   width: 100px;
 }
 
 .augerLen {
-  display: flex;
-  justify-content: flex-end;
   width: 67px;
 }
 
 .fuelType {
-  display: flex;
-  justify-content: flex-end;
   width: 60px;
 }
 
 .totalTime {
-  display: flex;
-  justify-content: flex-end;
   width: 130px;
 }
 
 .totalCost {
-  display: flex;
-  justify-content: flex-end;
   width: 70px;
 }
 
 .numPasses {
-  display: flex;
-  justify-content: flex-end;
   width: 158px;
 }
 
 .electricRuns{
-  display: flex;
-  justify-content: flex-end;
   width: 60px;
 }
 
 .fieldCoverage {
-  display: flex;
-  justify-content: flex-end;
   width: 100px;
 }
 
 .totalEfficiency {
-  display: flex;
-  justify-content: flex-end;
   width: 90px;
 }
 
