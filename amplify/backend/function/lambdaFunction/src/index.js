@@ -63,13 +63,32 @@ const createSimulationReport = gql`
   }
 `;
 
-exports.handler = async (event, _, callback) => {
-  const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
+const listPreviousCombineQuery = (augerLength, fuelType, wheelDiameter) => {
+  return gql`
+    query previousCombineInfo {
+      listSimulationReports(
+        filter: { 
+          augerLength: { eq: ${augerLength} }, fuelType: { eq: "${fuelType}" }, wheelDiameter: { eq: ${wheelDiameter} } }
+      ) {
+        items {
+          wheelDiameter
+          fuelType
+          augerLength
+          costPerRun
+          timeSpentToPlaneTheField
+          percentageOfFieldChosenToCover
+        }
+      }
+    }
+  `;
+};
 
-  const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns);
+exports.handler = async (event, _, callback) => {
+  const getUserInputs_graphqlData = queryGraphqlData(listUserInputs); // this returns a promise
+  const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns); // this returns a promise
 
   await Promise.all([getUserInputs_graphqlData, getNumOfElectricRuns_graphqlData])
-    .then((res) => {
+    .then(async (res) => {
       const [listUserInputsData, numOfElectricRunsData] = res;
 
       const userInputBody = {
@@ -82,35 +101,26 @@ exports.handler = async (event, _, callback) => {
 
       let numOfElectricRuns = numOfElectricRunsBody.graphqlData;
 
-      const reportDataArr = userInputBody.graphqlData.map(async (combine, idx) => {
+      const reportDataPromises = userInputBody.graphqlData.map((combine, idx) => {
         const { wheelDiameter, fuelType, augerLength } = combine;
-        // generate obstacles
-        const obstacles = obstaclesCoordinate();
-        const percentageOfFieldChosenToCover = totalPercentageCoverage(obstacles, augerLength);
+        return queryGraphqlData(listPreviousCombineQuery(augerLength, fuelType, wheelDiameter));
+      });
 
-        //query for test efficiency for specific combine
-        const listPreviousCombineQuery = gql`
-          query previousCombineInfo {
-            listSimulationReports(
-              filter: { 
-                augerLength: { eq: ${augerLength} }, fuelType: { eq: "${fuelType}" }, wheelDiameter: { eq: ${wheelDiameter} } }
-            ) {
-              items {
-                costPerRun
-                timeSpentToPlaneTheField
-                percentageOfFieldChosenToCover
-              }
-            }
-          }
-        `;
+      const prevCombineArray = await Promise.all(reportDataPromises).then((all) => {
+        return all.map((res) => res.data.data.listSimulationReports.items);
+      });
 
-        const listPreviousCombine = await queryGraphqlData(listPreviousCombineQuery).then((res) => {
-          return res.data.data.listSimulationReports.items;
-        });
+      const reportDataArr = userInputBody.graphqlData.map((combine, idx) => {
+        const { wheelDiameter, fuelType, augerLength } = combine;
 
         if (fuelType === 'Electric') {
           numOfElectricRuns += 1;
         }
+
+        // generate obstacles
+        const obstacles = obstaclesCoordinate();
+        const percentageOfFieldChosenToCover = totalPercentageCoverage(obstacles, augerLength);
+
         const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
           wheelDiameter,
           augerLength,
@@ -119,45 +129,28 @@ exports.handler = async (event, _, callback) => {
           percentageOfFieldChosenToCover
         );
 
-        const newData = {
+        const currentData = {
           costPerRun: totalCostPerRun,
           timeSpentToPlaneTheField: totalTimeToPlaneField,
           percentageOfFieldChosenToCover,
         };
 
-        listPreviousCombine.push(newData);
-        const totalEfficiency = getTotalEfficiency(listPreviousCombine);
+        prevCombineArray[idx].push(currentData);
+        const totalEfficiency = getTotalEfficiency(prevCombineArray[idx]);
 
         const reportBody = {
           wheelDiameter: parseInt(wheelDiameter),
           augerLength: parseFloat(augerLength),
+          totalEfficiency,
           fuelType,
           combineWeight: totalWeight,
           timeSpentToPlaneTheField: totalTimeToPlaneField,
           costPerRun: totalCostPerRun,
           numOfElectricRuns,
           percentageOfFieldChosenToCover,
-          totalEfficiency,
         };
-        console.log('reportBody: bfore mutation', await reportBody);
 
-        const insertBody = await queryGraphqlData(createSimulationReport, reportBody);
-        // console.log('insertBody:', insertBody)
-
-        // const insertBody = await axios({
-        //   url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
-        //   method: 'post',
-        //   headers: {
-        //     'x-api-key': process.env.API_REPORTAPI_GRAPHQLAPIKEYOUTPUT,
-        //   },
-        //   data: {
-        //     query: print(createSimulationReport),
-        //     variables: {
-        //       input: reportBody,
-        //     },
-        //   },
-        // });
-        // console.log('reportBody:', await reportBody);
+        queryGraphqlData(createSimulationReport, reportBody);
       });
     })
     .catch((err) => callback('error with promise all', err));
@@ -171,18 +164,16 @@ exports.handler = async (event, _, callback) => {
       },
       data: {
         query: print(listUserInputs),
-        // query: print(getNumOfElectricRuns),
       },
     });
 
     const body = {
-      graphqlData: graphqlData.data.data.listUserInputs.items,
+      message: 'successfull simulation',
     };
 
     return {
       statusCode: 200,
       body: JSON.stringify(body),
-      // body: JSON.stringify(generateReport),
       headers: {
         'Access-Control-Allow-Origin': 'http://localhost:3000',
       },
