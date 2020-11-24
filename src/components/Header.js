@@ -6,9 +6,11 @@ const Header = () => {
   const isTabletOrMobile = useMediaQuery({
     query: '(max-width: 1224px)',
   });
+
+  const className = isTabletOrMobile ? 'header center' : 'header';
   return (
-    <div className='header'>
-      <div className='title__header num'>{isTabletOrMobile && <span>Simulation Report</span>}#</div>
+    <div className={className}>
+      <div className='title__header num'>{isTabletOrMobile && <span>Simulation Report</span>} # </div>
       <div className='title__header timestamp'>Timestamp</div>
       <div className='title__header wheelDia'>Wheel Diameter (in)</div>
       <div className='title__header combineWgt'>Total Combine Weight (lbs)</div>

@@ -11,8 +11,10 @@ const Report = ({ item, index }) => {
   const isTabletOrMobile = useMediaQuery({
     query: '(max-width: 1224px)',
   });
+
+  const className = isTabletOrMobile ? 'isTabletOrMobile center' : 'isTabletOrMobile';
   return (
-    <div className='isTabletOrMobile'>
+    <div className={className}>
       {isTabletOrMobile && <Header key={index + Math.random()} />}
       <div key={index} className='report_body'>
         <div className='content__report_body num'>{index + 1}</div>

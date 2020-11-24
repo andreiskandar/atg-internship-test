@@ -84,8 +84,8 @@ const listPreviousCombineQuery = (augerLength, fuelType, wheelDiameter) => {
 };
 
 exports.handler = async (event, _, callback) => {
-  const getUserInputs_graphqlData = queryGraphqlData(listUserInputs); // this returns a promise
-  const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns); // this returns a promise
+  const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
+  const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns);
 
   await Promise.all([getUserInputs_graphqlData, getNumOfElectricRuns_graphqlData])
     .then(async (res) => {

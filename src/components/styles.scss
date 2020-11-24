@@ -5,8 +5,29 @@
   flex-direction: column;
   margin-top: 30px;
 }
+.ui.pointing.menu{
+  display: flex;
+  justify-content: center;
+}
+.ui.segment.active.tab{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  .ui.primary.button{
+    width: 228px;
+  }
+  width:1012px;
+  .ui.card{
+    // margin-left:322px;
+  }
+  .center{
+    // margin-left: 133px;
+  }
+}
 
 .ui.card{
+
   padding: 10px;
   h3{
     display: flex;
@@ -61,7 +82,7 @@
   
   .title__header {
     font-size: smaller;
-    border: solid thin black;
+    border: solid thin #bfbfbf;
     padding: 3px;
   }
 }
@@ -71,7 +92,7 @@
 
   .content__report_body {
     font-size: smaller;
-    border: solid thin black;
+    border: solid thin #bfbfbf;
     padding: 3px;
   }
 
@@ -143,7 +164,7 @@ only screen and (max-width: 1224px) {
     .title__header {
       justify-content: flex-start;
       font-size: smaller;
-      border: solid thin black;
+      border: solid thin #bfbfbf;
       padding: 3px;
       width: 240px;
     }
@@ -159,7 +180,7 @@ only screen and (max-width: 1224px) {
 
     .content__report_body {
       font-size: smaller;
-      border: solid thin black;
+      border: solid thin #bfbfbf;
       padding: 3px;
     }
 

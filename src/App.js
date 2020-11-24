@@ -14,20 +14,50 @@ import {
 } from './graphql/mutations';
 import { getResult } from './helpers/calculation';
 import { initialState, reducer } from './hooks/useReducer';
-import { Container, Button } from 'semantic-ui-react';
-import { obstaclesCoordinate } from './helpers/obstaclesGenerator';
+import { Container, Button, Tab } from 'semantic-ui-react';
 
 function App() {
   const isTabletOrMobile = useMediaQuery({
     query: '(max-width: 1224px)',
   });
 
+  const panes = [
+    {
+      menuItem: 'Combine Configuration',
+      render: () => (
+        <Tab.Pane attached={false}>
+          <Input
+            handleUserInput={handleUserInput}
+            radioChecked={state.radioChecked}
+            onChange={onChange}
+            fuelType={state.fuelType}
+            wheelDiameter={state.wheelDiameter}
+            augerLength={state.augerLength}
+            dispatch={dispatch}
+          />
+        </Tab.Pane>
+      ),
+    },
+    {
+      menuItem: 'Log',
+      render: () => (
+        <Tab.Pane attached={false}>
+          <Button primary onClick={getSimulationReport}>
+            Refresh
+          </Button>
+          <br />
+          <div>
+            {!isTabletOrMobile && <Header />}
+            {renderReport}
+          </div>
+        </Tab.Pane>
+      ),
+    },
+  ];
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    // getSimulationReport();
-    console.log(obstaclesCoordinate());
-    getNumOfElectricRuns();
+    getSimulationReport();
   }, []);
 
   const getSimulationReport = async () => {
@@ -129,7 +159,7 @@ function App() {
 
   return (
     <Container className='App'>
-      <Input
+      {/* <Input
         handleUserInput={handleUserInput}
         radioChecked={state.radioChecked}
         onChange={onChange}
@@ -137,17 +167,15 @@ function App() {
         wheelDiameter={state.wheelDiameter}
         augerLength={state.augerLength}
         dispatch={dispatch}
-      />
+      /> */}
       {/* <input name='wheelDiameter' onChange={onChange} value={state.wheelDiameter} placeholder='wheel diameter' />
       <input name='augerLength' onChange={onChange} value={state.augerLength} placeholder='augerLength max:25.7' /> */}
-      <Button primary onClick={getSimulationReport}>
-        Generate Report
-      </Button>
+      <Tab menu={{ pointing: true }} panes={panes}></Tab>
+
       {/* <button onClick={handleUserInput}>Enter</button> */}
 
       <br />
-      {!isTabletOrMobile && <Header />}
-      {renderReport}
+      {/* {!isTabletOrMobile && <Header />} */}
     </Container>
   );
 }
@@ -163,26 +191,3 @@ export default App;
 //   }
 // }
 // `;
-
-// create lambda function to run hourly and insert into report table
-
-// type simulationReport
-// @model
-//   {
-//   id: ID!
-//   combineWeight: Float!
-//   wheelDiameter: Int!
-//   fuelType: String!
-//   augerLength: Float!
-//   timeSpentToPlaneTheField: Float
-//   costPerRun: Float
-//   percentageOfFieldChosenToCover: Float
-//   numOfElectricRuns: Int
-// }
-
-// type userInput @model {
-//   id: ID!
-//   wheelDiameter: Int!
-//   fuelType: String!
-//   augerLength: Float!
-// }
