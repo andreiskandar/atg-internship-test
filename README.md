@@ -1,6 +1,6 @@
 # Combine Automation Report Simulator
 
-Create a prototype simulation for the future of agriculture harvesiting. To prove the concept of autonomous combines [harvesting tractor], a wizard input is required to configure autonomous combine and add that configuration into a database. 
+Create a prototype simulation for the future of agriculture harvesting. To prove the concept of autonomous combines [harvesting tractor], a wizard input is required to configure autonomous combine and add that configuration into a database. 
 
 All combines in the database will have a scheduled simulation test ran to log the functionality and operation of each combine to measure its efficiency through harvesting a 10-acre square field. 
 
