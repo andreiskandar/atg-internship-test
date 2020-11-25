@@ -4,14 +4,11 @@ Create a prototype simulation for the future of agriculture harvesting. To prove
 
 All combines in the database will have a scheduled simulation test ran to log the functionality and operation of each combine to measure its efficiency through harvesting a 10-acre square field. 
 
-Each combine is tested every hour with randomly generated obstacles placed in the square field. This app is to calculate the total time to plane the field, cost per run, percentarge planed field coverage and the total efficieny based on combine wheel diameter, auger length and fuel type. 
+Each combine is tested every hour with randomly generated obstacles placed in the square field. This app is to calculate the total time to plane the field, cost per run, percentage planed field coverage and the total efficieny based on combine wheel diameter, auger length and fuel type. 
 
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
+## Available scripts
+In the project directory, you can run `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
