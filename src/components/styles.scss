@@ -167,13 +167,13 @@ only screen and (max-width: 1224px) {
       font-size: smaller;
       border: solid thin #bfbfbf;
       padding: 3px;
-      width: 240px;
+      width: 190px;
     }
   }
 
 
 .ui.segment.active.tab{
-  width: 460px;
+  width: 370px;
 }
 
   .report_body {
@@ -186,8 +186,8 @@ only screen and (max-width: 1224px) {
       padding: 3px;
     }
 
-    .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns, .fieldCoverage, .totalEfficiency {
-      width: 190px;
+    .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns, .fieldCoverage, .totalEfficiency, .timestamp {
+      width: 155px;
     }
 
   }
