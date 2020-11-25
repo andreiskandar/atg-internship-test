@@ -1,18 +1,11 @@
 import React, { useEffect, useReducer } from 'react';
-
 import { API, graphqlOperation } from 'aws-amplify';
 import { useMediaQuery } from 'react-responsive';
-
 import Header from './components/Header';
 import Input from './components/Input';
 import Report from './components/Report';
-import { v4 as uuidv4 } from 'uuid';
-import { listSimulationReports, getNumOfElectricRuns as getNumOfElectricRunsQuery } from './graphql/queries';
-import {
-  createSimulationReport as CreateSimulationReport,
-  createUserInput as CreateUserInput,
-} from './graphql/mutations';
-import { getResult } from './helpers/calculation';
+import { listSimulationReports } from './graphql/queries';
+import { createUserInput as CreateUserInput } from './graphql/mutations';
 import { initialState, reducer } from './hooks/useReducer';
 import { Container, Button, Tab } from 'semantic-ui-react';
 
@@ -47,10 +40,9 @@ function App() {
             Refresh
           </Button>
           <br />
-          <div>
-            {!isTabletOrMobile && renderReport && <Header />}
-            {renderReport}
-          </div>
+          {!isTabletOrMobile && renderReport && <Header />}
+
+          <div>{renderReport}</div>
         </Tab.Pane>
       ),
     },
@@ -115,13 +107,3 @@ function App() {
 }
 
 export default App;
-
-// export const getNumOfElectricRuns = `
-// query getNumOfElectricRuns {
-//   listSimulationReports(filter: {fuelType: {eq: "Electric"}}) {
-//     items {
-//       id
-//     }
-//   }
-// }
-// `;
