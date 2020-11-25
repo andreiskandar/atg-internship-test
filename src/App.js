@@ -72,7 +72,6 @@ function App() {
     try {
       await API.graphql(graphqlOperation(CreateUserInput, { input: userInput }));
       return true;
-      // dispatch({ type: 'CLEAR_INPUT' });
     } catch (err) {
       console.log('err from mutating userInput', err);
       return false;
