@@ -1,12 +1,13 @@
 Assumptions
 1)  Combine tractor can only travel either in x or y direction. Combine tractor can turn 90 degree,
-2)  Each report will be generated based on the unique combines parameters and randomly-generated obstacles location. 
-3)  Based on the coordinate (x,y) of the obstacles, the combine will make decision to traverse along the x-axis or y-axis.
+2)  Each report will be generated based on the unique combine configurations that were obtained from user input and randomly-generated obstacles location. 
+3)  Based on the coordinate (x,y) of the obstacles, the combine will make decision to traverse along the x-axis or y-axis and will make decision to optimize maximum field coverage
 4)  Maximum wheel diameter = 70in
 5)  Percentage Field Chosen Coverage is based on the auger length and location of the obstacles. To simplify the calculation,
     it is determined by three scenarios: 
-    1) all obstacles are scattered all over the field: 3 x augerLength x fieldLength are chosen not to be planed. 
+    1) all obstacles are scattered all over the field: 3 x augerLength x fieldLength is chosen not to be planed. 
     2) two obstacles are in one group (within the auger length): 2 x augerLength * fieldLength is chosen not to be planed
     3) three obstacles are in one group (within the auger length): 1 x augerLength * fieldLength is chosen not be planed
     As auger gets longer, it will reduce planning time and percentage coverage.     
+6) 
     

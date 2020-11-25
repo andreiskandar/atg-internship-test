@@ -84,6 +84,7 @@ const listPreviousCombineQuery = (augerLength, fuelType, wheelDiameter) => {
 };
 
 exports.handler = async (event, _, callback) => {
+  // query API for user inputs and number of electric runs from db
   const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
   const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns);
 
@@ -101,12 +102,13 @@ exports.handler = async (event, _, callback) => {
 
       let numOfElectricRuns = numOfElectricRunsBody.graphqlData;
 
-      const reportDataPromises = userInputBody.graphqlData.map((combine, idx) => {
+      // query API for previous combine from db
+      const prevCombinePromises = userInputBody.graphqlData.map((combine, idx) => {
         const { wheelDiameter, fuelType, augerLength } = combine;
         return queryGraphqlData(listPreviousCombineQuery(augerLength, fuelType, wheelDiameter));
       });
 
-      const prevCombineArray = await Promise.all(reportDataPromises).then((all) => {
+      const prevCombineArray = await Promise.all(prevCombinePromises).then((all) => {
         return all.map((res) => res.data.data.listSimulationReports.items);
       });
 
@@ -121,6 +123,7 @@ exports.handler = async (event, _, callback) => {
         const obstacles = obstaclesCoordinate();
         const percentageOfFieldChosenToCover = totalPercentageCoverage(obstacles, augerLength);
 
+        // call helper function
         const { totalTimeToPlaneField, totalCostPerRun, totalWeight } = getResult(
           wheelDiameter,
           augerLength,
@@ -135,6 +138,7 @@ exports.handler = async (event, _, callback) => {
           percentageOfFieldChosenToCover,
         };
 
+        // add current data with previous data array to calculate total efficiency
         prevCombineArray[idx].push(currentData);
         const totalEfficiency = getTotalEfficiency(prevCombineArray[idx]);
 
@@ -150,6 +154,7 @@ exports.handler = async (event, _, callback) => {
           percentageOfFieldChosenToCover,
         };
 
+        // query to insert new data into db
         queryGraphqlData(createSimulationReport, reportBody);
       });
     })
