@@ -6,6 +6,7 @@ import './styles.scss';
 const Input = ({ dispatch, onChange, radioChecked, augerLength, wheelDiameter, handleUserInput, fuelType }) => {
   const minAugerLength = 8.7;
   const maxAugerLength = 25.7;
+
   const [state, setState] = useState({
     wheelError: false,
     augerLenError: false,

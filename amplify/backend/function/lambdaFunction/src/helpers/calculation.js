@@ -51,8 +51,8 @@ const getResult = (
     Math.pow(COST_INCR_DUE_TO_INCREASE_IN_AUGER_FACTOR, augerLenDiff);
 
   const totalTimeToPlaneField =
-    (totalNumberOfPassesRequiredToPlane * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR) ^
-    (wheelDiaDiff * pctFieldChosenToCover);
+    (totalNumberOfPassesRequiredToPlane * TIME_PER_PASS_min * TIME_REDUCTION_FACTOR * pctFieldChosenToCover) ^
+    wheelDiaDiff;
 
   return { totalTimeToPlaneField, totalCostPerRun, totalWeight };
 };
