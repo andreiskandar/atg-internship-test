@@ -84,6 +84,7 @@ const listPreviousCombineQuery = (augerLength, fuelType, wheelDiameter) => {
 };
 
 exports.handler = async (event, _, callback) => {
+  
   // query API for user inputs and number of electric runs from db
   const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
   const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns);

@@ -12,6 +12,7 @@ const totalPercentageCoverage = (ob, augerLength) => {
   const turnXInA = Math.floor(a0 / augerLength);
   const turnXInB = Math.floor(b0 / augerLength);
   const turnXInC = Math.floor(c0 / augerLength);
+  
   const turnYInA = Math.floor(a1 / augerLength);
   const turnYInB = Math.floor(b1 / augerLength);
   const turnYInC = Math.floor(c1 / augerLength);
