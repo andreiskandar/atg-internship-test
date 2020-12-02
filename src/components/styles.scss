@@ -167,13 +167,13 @@ only screen and (max-width: 1224px) {
       font-size: smaller;
       border: solid thin #bfbfbf;
       padding: 3px;
-      width: 190px;
+      width: 200px;
     }
   }
 
 
 .ui.segment.active.tab{
-  width: 370px;
+  width: 390px;
 }
 
   .report_body {
@@ -187,7 +187,7 @@ only screen and (max-width: 1224px) {
     }
 
     .num, .wheelDia, .combineWgt, .augerLen, .fuelType, .totalTime, .totalCost, .numPasses, .electricRuns, .fieldCoverage, .totalEfficiency, .timestamp {
-      width: 155px;
+      width: 165px;
     }
 
   }

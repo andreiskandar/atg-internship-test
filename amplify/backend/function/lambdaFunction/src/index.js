@@ -84,7 +84,6 @@ const listPreviousCombineQuery = (augerLength, fuelType, wheelDiameter) => {
 };
 
 exports.handler = async (event, _, callback) => {
-  
   // query API for user inputs and number of electric runs from db
   const getUserInputs_graphqlData = queryGraphqlData(listUserInputs);
   const getNumOfElectricRuns_graphqlData = queryGraphqlData(getNumOfElectricRuns);
@@ -113,7 +112,7 @@ exports.handler = async (event, _, callback) => {
         return all.map((res) => res.data.data.listSimulationReports.items);
       });
 
-      const reportDataArr = userInputBody.graphqlData.map((combine, idx) => {
+      const reportDataPromises = userInputBody.graphqlData.map(async (combine, idx) => {
         const { wheelDiameter, fuelType, augerLength } = combine;
 
         if (fuelType === 'Electric') {
@@ -156,7 +155,11 @@ exports.handler = async (event, _, callback) => {
         };
 
         // query to insert new data into db
-        queryGraphqlData(createSimulationReport, reportBody);
+        return queryGraphqlData(createSimulationReport, reportBody);
+      });
+
+      const resolvingPromises = await Promise.all(reportDataPromises).then((all) => {
+        all.map((res) => console.log('res.data', res.data.data));
       });
     })
     .catch((err) => callback('error with promise all', err));

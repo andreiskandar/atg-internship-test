@@ -2,8 +2,8 @@ const axios = require('axios');
 const graphql = require('graphql');
 const { print } = graphql;
 
-const queryGraphqlData = (graphqlQuery, body) => {
-  return axios({
+const queryGraphqlData = async (graphqlQuery, body) => {
+  return await axios({
     url: process.env.API_REPORTAPI_GRAPHQLAPIENDPOINTOUTPUT,
     method: 'post',
     headers: {
